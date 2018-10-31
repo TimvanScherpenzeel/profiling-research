@@ -4,9 +4,9 @@ In order to profile the performance of a web application one would usually use t
 
 Chromium and V8 ship with various built-in tools that help their developers during development of the browser and engine. Luckily we, as web developer, can leverage these same tools to get a better understanding of what is happening under the hood.
 
-## Note on micro optimisations
+## Compiler pipeline
 
-## Overview
+### Overview
 
 ```
     Source code
