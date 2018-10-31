@@ -19,14 +19,8 @@ function log () {
   echo -e "\033[m"
 }
 
-cleanup() {
-    rm -rf logs/*.log
-}
-
 run() {
     log "Starting the Chrome Canary V8 profiler"
-
-    cleanup
 
     mkdir -p $LOG_DIRECTORY
     touch $LOG_OUTPUT

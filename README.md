@@ -4,10 +4,6 @@
 
 ## Visualizing performance profiles
 
-`chrome://tracing/` -> `record`
-
-Skia
-
 ## Resources
 
 - https://v8.dev/docs/profile
