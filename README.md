@@ -1,8 +1,10 @@
 # Profiling research
 
-## Profiling in Chrome Canary (V8 engine)
+In order to profile the performance of a web application one would usually use the browsers built-in developer tools. Every once in a while however there comes a time when a developer needs a better understanding of a performance issue in order to solve it. In order to get that understanding the developer needs access to low-level optimisations, de-optimisations, statistics on inline caching and a general understanding of the various compilers in modern browser engines.
 
-In order to profile the performance of a web application one would usually use the browsers built-in developer tools. Every once in a while however the comes a time when a developer needs a better understanding of a performance issue in order to solve it. The built-in collecting and analysis tooling in V8 can help with that.
+## Profiling in Chrome Canary (V8)
+
+Chromium and V8 ship with various built-in tools that help their developers during development of the browser and engine. Luckily we, as web developer, can leverage these tools.
 
 ## Record and visualizing performance profiles
 
