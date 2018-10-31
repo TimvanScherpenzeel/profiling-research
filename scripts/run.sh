@@ -27,12 +27,12 @@ run() {
 
     echo -e "Starting Chrome Canary with custom profiling flags\n"
 
-    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --remote-debugging-port=$REMOTE_PORT --js-flags="--trace-opt --trace-deopt --trace-file-names" > $LOG_OUTPUT 2> $LOG_ERROR
+    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --allow-file-access-from-files --remote-debugging-port=$REMOTE_PORT --js-flags="--trace-opt --trace-deopt --trace-file-names" > $LOG_OUTPUT 2> $LOG_ERROR
 }
 
 # Main script
 
-LOCATION="${1:-localhost\:8080}"
+LOCATION="${1:-http://localhost:8080}"
 LOG_DIRECTORY="${2:-logs}"
 LOG_OUTPUT="${3:-logs/chrome_canary_output.log}"
 LOG_ERROR="${4:-logs/chrome_canary_error.log}"
