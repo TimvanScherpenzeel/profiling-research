@@ -55,7 +55,7 @@ For example, if it can assume that all objects created by a particular construct
 The optimizing compiler uses the information the monitor has gathered by watching code execution to make these judgments. If something has been true for all previous passes through a loop, it assumes it will continue to be true. Unfortunately in JavaScript there are no guarantees meaning that shapes can change at any stage over time.
 Due to this lack of guarantees the assumptions of the compiler need to be validated every single time. If it turns out the assumption turned out to be false the `JIT` assumes it made the wrong assumptions, trashes the last version of the optimized code and must step back to a valid de-optimized version because necessary type information will be missing. It is therefore very important that you limit the amount of type changes of an object throughout the lifetime of the program in order to keep the highly optimized `hot` `JIT code` alive.
 
-When we are profiling a large part of our effort goes out to the parts of the application are being optimized and more importantly which parts of the application are being de-optimized.
+When profiling a large part of your effort should go out to the parts of the application that are being optimized and more importantly which parts of the application are being de-optimized. Other things to take into account are optimizing object property access, object shapes and inline caches (`IC's`). JavaScript engines use `IC's` to memorize information on where to find properties on objects to reduce the number of expensive lookups.
 
 ## Record and visualizing performance profiles
 
@@ -86,3 +86,5 @@ $ ./scripts/run.sh <URL>
 - [The Trace Event Profiling Tool (chrome://tracing)](https://www.chromium.org/developers/how-tos/trace-event-profiling-tool)
 - [Ignition - an interpreter for V8](https://www.youtube.com/watch?v=r5OWCtuKiAk)
 - [A crash course in Just In Time (JIT) compilers](https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers/)
+- [JavaScript engine fundamentals: Shapes and Inline Caches](https://mathiasbynens.be/notes/shapes-ics)
+- [JavaScript Engines: The Good Parts™ - Mathias Bynens & Benedikt Meurer - JSConf EU 2018](https://www.youtube.com/watch?v=5nmpokoRaZI)
