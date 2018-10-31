@@ -18,3 +18,23 @@
 - https://www.chromium.org/developers/creating-v8-profiling-timeline-plots
 - https://www.chromium.org/developers/how-tos/trace-event-profiling-tool
 
+v8/tools/ic-explorer.html
+--trace-ic
+
+Inline cache
+
+%HaveSameMap
+
+node --allow-natives-syntax
+
+Baseline compiler (general analysis of what functions are hot)
+Optimizing compiler (recompile hot functions) - TurboFan (Crankshaft was the old one)
+
+// trace-ic
+// logfile=""
+
+IC States
+- uninitialized
+- monomorphic IC (1 map) - local cache
+- polymorphic IC (2-4 maps) - local cache
+- megamorphic (more than 4 maps) - global cache
