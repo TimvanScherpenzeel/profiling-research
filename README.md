@@ -16,6 +16,7 @@ In order to profile the performance of a web application one would usually use t
 
 - [V8 profile documentation](https://v8.dev/docs/profile)
 - https://github.com/thlorenz/v8-perf
+- https://github.com/thlorenz/turbolizer
 - https://chromedevtools.github.io/devtools-protocol/v8/Profiler/#method-startTypeProfile
 - https://nodejs.org/api/inspector.html
 - https://blog.ghaiklor.com/tracing-de-optimizations-in-nodejs-2ba16900fc6f
