@@ -1,4 +1,4 @@
-# V8 profiling research
+# Profiling research
 
 ## Profiling in Chrome Canary (V8 engine)
 
