@@ -1,6 +1,10 @@
-# Profiler
+# V8 profiling research
 
 ## Profiling in Chrome Canary (V8 engine)
+
+In order to profile the performance of a web application one would usually use the browsers built-in developer tools. Every once in a while however the comes a time when a developer needs a better understanding of a performance issue in order to solve it. The built-in collecting and analysis tooling in V8 can help with that.
+
+# Developer tools
 
 ## Visualizing performance profiles
 
@@ -10,7 +14,7 @@
 - [Franziska Hinkelmann - Performance Profiling for V8 / Script17 (Video)](https://www.youtube.com/watch?v=j6LfSlg8Fig)
 - [Franziska Hinkelmann - Performance Profiling for V8 / Script17 (Files)](https://github.com/fhinkel/PerformanceProfiling)
 
-- https://v8.dev/docs/profile
+- [V8 profile documentation](https://v8.dev/docs/profile)
 - https://github.com/thlorenz/v8-perf
 - https://chromedevtools.github.io/devtools-protocol/v8/Profiler/#method-startTypeProfile
 - https://nodejs.org/api/inspector.html
@@ -34,6 +38,7 @@ Optimizing compiler (recompile hot functions) - TurboFan (Crankshaft was the old
 // logfile=""
 
 IC States
+
 - uninitialized
 - monomorphic IC (1 map) - local cache
 - polymorphic IC (2-4 maps) - local cache
