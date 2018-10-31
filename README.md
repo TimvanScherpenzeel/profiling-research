@@ -34,7 +34,7 @@ JavaScript source code is `JIT (Just In Time)` compiled meaning it is compiled a
 
 ### Parser
 
-In order for the browser engine to understand the source code it needs to be parsed. Generally the entire JavaScript source code must be parsed before creating an `AST`.
+In order for the browser engine to understand the source code it needs to be parsed. Generally the entire JavaScript source code must be parsed before creating an `AST`. A parser generally checks for any syntactical and early errors and the scope of variables.
 
 ### AST (Abstract Syntax Tree)
 
