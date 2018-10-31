@@ -4,9 +4,23 @@
 
 In order to profile the performance of a web application one would usually use the browsers built-in developer tools. Every once in a while however the comes a time when a developer needs a better understanding of a performance issue in order to solve it. The built-in collecting and analysis tooling in V8 can help with that.
 
-# Developer tools
+## Record and visualizing performance profiles
 
-## Visualizing performance profiles
+In order to record and visualize advanced performance profiles you should use `chrome://tracing`.
+
+## Installation
+
+Automatically set up for MacOS:
+
+```sh
+$ ./scripts/setup_macos.sh
+```
+
+## Usage
+
+```sh
+$ ./scripts/run.sh <URL>
+```
 
 ## Resources
 
@@ -22,25 +36,3 @@ In order to profile the performance of a web application one would usually use t
 - https://blog.ghaiklor.com/tracing-de-optimizations-in-nodejs-2ba16900fc6f
 - https://www.chromium.org/developers/creating-v8-profiling-timeline-plots
 - https://www.chromium.org/developers/how-tos/trace-event-profiling-tool
-
-v8/tools/ic-explorer.html
---trace-ic
-
-Inline cache
-
-%HaveSameMap
-
-node --allow-natives-syntax
-
-Baseline compiler (general analysis of what functions are hot)
-Optimizing compiler (recompile hot functions) - TurboFan (Crankshaft was the old one)
-
-// trace-ic
-// logfile=""
-
-IC States
-
-- uninitialized
-- monomorphic IC (1 map) - local cache
-- polymorphic IC (2-4 maps) - local cache
-- megamorphic (more than 4 maps) - global cache
