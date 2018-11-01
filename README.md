@@ -14,7 +14,7 @@ It is not necessary to understand the intrinsics of each browser engine but it i
 
 ![V8 compiler pipeline](/docs/V8_COMPILER_PIPELINE.png?raw=true)
 
-*Image source: Franziska Hinkelmann - https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775*
+_Image source: Franziska Hinkelmann - https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775_
 
 ### Source code
 
@@ -24,7 +24,7 @@ JavaScript source code is `JIT (Just In Time)` compiled meaning it is being comp
 
 The parser generally consists out of a `pre-parser` and a `full-parser`. The `pre-parser` rapidly checks for syntactical and early errors in the program and will throw if it finds any. The `full-parser` evaluates the scope of variables throughout the program and collects basic type information.
 
-### AST (Abstract Syntax Tree)
+### AST
 
 The `Abstract Syntax Tree` or in short `AST` is created from the parsed source code.
 `AST's` are data structures widely used in compilers, due to their property of representing the structure of program code. An `AST` is usually the result of the syntax analysis phase of a compiler, a tree representation of the abstract syntactic structure of source code. Each node of the tree denotes a construct occurring in the source code. It is benificial to get a good understanding of what `AST's` are as they are very oftenly used in pre-processors, code generators, minifiers, transpilers, linters and codemods.
@@ -43,10 +43,9 @@ When profiling and optimizing your JavaScript code effort should go out to optim
 
 ## Profiling
 
-In order to record and visualize advanced performance profiles you should use `chrome://tracing`.
+I'll primarily focus on profiling using built-in tools of V8 as most developers are familiar with Chrome. Besides the built-in browser developer tools one can start the browser with flags to enable the performance profiling of various parts of the web application. In order to record and visualize these performance profiles you should use `chrome://tracing`, previously `about://tracing`. Please note that any traces recorded with the tool will contains all currently opened resources (tabs, extensions, subresources) with the browser. Make sure that Chrome starts without any other resources active in order to be able to get a relatively clean trace.
 
-https://sites.google.com/a/chromium.org/dev/developers/how-tos/trace-event-profiling-tool/recording-tracing-runs
-https://sites.google.com/a/chromium.org/dev/developers/how-tos/submitting-a-performance-bug
+In order to record a clean trace you should keep the recording to a maximum of 10 seconds, focus on a single activity per recording and leave the computer completely idle for 2 seconds before and after each recording. This will help making the slow process stand out amongst the other recorded data.
 
 ### Memory profiling and garbage collection
 
@@ -54,6 +53,7 @@ The essential point of garbage collection is the ability to manage memory usage 
 All management of the memory is done by the browser engine, no ECMAScript API is exposed to web developers to control it.
 The job of the garbage collector is to go through objects that are allocated in memory and determine wheter they are `dead` or `alive`. If an object is not reacheable it is considered dead, is removed from memory and previously allocated memory gets released back to the heap.
 
+- Show how to use the developer tools in order to get a memory profile over time
 - out of scope variables / functions
 - objects that lost their references (name WeakMaps as a possible solution)
 - show how to profile the memory over time and give general tips regarding the initialisation of variables and inner functions
