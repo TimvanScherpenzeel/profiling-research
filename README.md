@@ -71,9 +71,13 @@ https://chromium.googlesource.com/chromium/src/+/master/docs/profiling.md
 Show how to profile the GPU and how to interpret the visualized results.
 
 https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/probe-gpu.md
+
 https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/OpenGLProfilerUserGuide/Introduction/Introduction.html
+
 https://renderdoc.org/docs/index.html
+
 https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/ToolsOverview/ToolsOverview.html
+
 https://www.html5rocks.com/en/tutorials/games/abouttracing/
 
 ## Installation
