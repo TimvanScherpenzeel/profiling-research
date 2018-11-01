@@ -4,13 +4,11 @@ In order to profile the performance of a web application one would usually use t
 
 Chromium and V8 ship with various built-in tools that help their developers during development of the browser and engine. Luckily we, as web developer, can leverage these same tools to get a better understanding of what is happening under the hood.
 
-## Compiler pipeline
-
 To understand what parts of the application are useful to profile one must have a general understanding of the architecture of the compiler pipeline in modern browser engines like V8. The compiler pipelines behind each browser are similar but not at all the same on a technical level. By looking at the V8 pipeline in general terms we can understand what are the core parts of each engine without getting lost in the implementation details.
 
 It is not necessary to understand the intrinsics of each browser engine but it is benificial as a starting point in understanding what is harming the performance of your application.
 
-### Overview
+## Compiler pipeline
 
 ![V8 compiler pipeline](/docs/V8_COMPILER_PIPELINE.png?raw=true)
 
