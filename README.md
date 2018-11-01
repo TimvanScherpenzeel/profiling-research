@@ -49,10 +49,12 @@ In order to record a clean trace you should keep the recording to a maximum of 1
 
 ### Memory profiling and garbage collection
 
-The essential point of garbage collection is the ability to manage memory usage by an application.
-All management of the memory is done by the browser engine, no ECMAScript API is exposed to web developers to control it.
-The job of the garbage collector is to go through objects that are allocated in memory and determine wheter they are `dead` or `alive`. If an object is not reacheable it is considered dead, is removed from memory and previously allocated memory gets released back to the heap.
+The essential point of garbage collection is the ability to manage memory usage by an application. All management of the memory is done by the browser engine, no ECMAScript API is exposed to web developers to control it. The job of the garbage collector is to `mark-and-sweep` or in other words: go through objects that are allocated in memory and determine wheter they are `dead` or `alive`. If an object is not reacheable it is considered dead, is removed from memory and previously allocated memory gets released back to the heap.
 
+In order to limit the amount of objects that have to be garbage collected a developer should take the following aspects into account:
+
+- Avoid the initializing or type changing of variables inside of a function you call often
+- Look into the use of a global object pool in order to recycle objects and avoid the dynamic allocation over the lifetime of your application
 - Show how to use the developer tools in order to get a memory profile over time
 - out of scope variables / functions
 - objects that lost their references (name WeakMaps as a possible solution)
