@@ -21,11 +21,11 @@ Chromium and V8 ship with various built-in tools that help their developers duri
         │
         |
         V
-    Baseline compiler ──> Unoptimized machine code
+    Baseline compiler ───> Unoptimized machine code
             |                       Λ
             | (hot functions)       | (changed types)
             V                       |
-    Optimizing compiler ──> Optimized machine code
+    Optimizing compiler ───> Optimized machine code
 ```
 
 ### Source code
