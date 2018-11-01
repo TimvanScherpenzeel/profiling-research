@@ -12,25 +12,9 @@ It is not necessary to understand the intrinsics of each browser engine but it i
 
 ### Overview
 
-```
-    Source code
-        │
-        |
-        V
-      Parser
-        │
-        |
-        V
-       AST
-        │
-        |
-        V
-    Baseline compiler ───> Unoptimized machine code
-            |                       Λ
-            | (hot functions)       | (changed types)
-            V                       |
-    Optimizing compiler ───> Optimized machine code
-```
+![V8 compiler pipeline](/docs/V8_COMPILER_PIPELINE.png?raw=true)
+
+*Image source: Franziska Hinkelmann - https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775*
 
 ### Source code
 
