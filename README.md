@@ -27,7 +27,7 @@ The parser generally consists out of a `pre-parser` and a `full-parser`. The `pr
 ### AST (Abstract Syntax Tree)
 
 The `Abstract Syntax Tree` or in short `AST` is created from the parsed source code.
-`AST's` are data structures widely used in compilers, due to their property of representing the structure of program code. An `AST` is usually the result of the syntax analysis phase of a compiler, a tree representation of the abstract syntactic structure of source code. Each node of the tree denotes a construct occurring in the source code.
+`AST's` are data structures widely used in compilers, due to their property of representing the structure of program code. An `AST` is usually the result of the syntax analysis phase of a compiler, a tree representation of the abstract syntactic structure of source code. Each node of the tree denotes a construct occurring in the source code. It is benificial to get a good understanding of what `AST's` are as they are very oftenly used in pre-processors, code generators, minifiers, transpilers, linters and codemods.
 
 ### Baseline compiler
 
@@ -35,14 +35,20 @@ The goal of the baseline compiler (`Ignition` in `V8`) is to rapidly generate re
 
 ### Optimizing compiler
 
-The optimizing compiler (`Turbofan` in `V8`) recompiles `hot` functions using previously collected type information to optimize the generated `machine code` further.
-However, in order to make a faster version of the `machine code`, the optimizing compiler has to make some assumptions regarding the shape of the object, that they always have the same property names and order, then the compiler can make further optimisations based on that. If the object shape has been the same throughout the lifetime of the program it is assumed that it will remain that way during future execution. Unfortunately in JavaScript there are no guarantees that this is actually the case meaning that object shapes can change at any stage over time. Due to this lack of guarantees the assumptions of the compiler need to be validated every single time before it runs. If it turns out the assumptions are false the optimizing compiler assumes it made the wrong assumptions, trashes the last version of the optimized code and steps back to a de-optimized version where assumptions are still valid. It is therefore very important that you limit the amount of type changes of an object throughout the lifetime of the program in order to keep the highly optimized code produced by the optimizng compiler alive.
+The optimizing compiler (`Turbofan` in `V8`) recompiles `hot` functions using previously collected type information to optimize the generated `machine code` further. However, in order to make a faster version of the `machine code`, the optimizing compiler has to make some assumptions regarding the shape of the object, that they always have the same property names and order, then the compiler can make further optimisations based on that. If the object shape has been the same throughout the lifetime of the program it is assumed that it will remain that way during future execution. Unfortunately in JavaScript there are no guarantees that this is actually the case meaning that object shapes can change at any stage over time. Due to this lack of guarantees the assumptions of the compiler need to be validated every single time before it runs. If it turns out the assumptions are false the optimizing compiler assumes it made the wrong assumptions, trashes the last version of the optimized code and steps back to a de-optimized version where assumptions are still valid. It is therefore very important that you limit the amount of type changes of an object throughout the lifetime of the program in order to keep the highly optimized code produced by the optimizng compiler alive.
 
 ### Conclusion
 
 When profiling and optimizing your JavaScript code effort should go out to optimizing the parts of the application that are being optimized (meaning that these functions are `hot`) and more importantly which parts of the application are being de-optimized (likely because types are changing in `hot` parts of the code). Other things to take into account are optimizing object property access, object shapes and inline caches. Inline caches are used to memorize information on where to find properties on objects to reduce the number of expensive lookups.
 
-## Memory profiling and garbage collection
+## Profiling
+
+In order to record and visualize advanced performance profiles you should use `chrome://tracing`.
+
+https://sites.google.com/a/chromium.org/dev/developers/how-tos/trace-event-profiling-tool/recording-tracing-runs
+https://sites.google.com/a/chromium.org/dev/developers/how-tos/submitting-a-performance-bug
+
+### Memory profiling and garbage collection
 
 One of the main parts of the browser engine developers do not have explicit control over is the garbage collector.
 
@@ -50,29 +56,33 @@ One of the main parts of the browser engine developers do not have explicit cont
 - objects that lost their references (name WeakMaps as a possible solution)
 - show how to profile the memory over time and give general tips regarding the initialisation of variables and inner functions
 
-## GPU profiling
+https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/README.md
+
+### CPU profiling
+
+Show how to profile the CPU and how to interpret the visualized results.
+
+https://chromium.googlesource.com/chromium/src/+/master/docs/profiling.md
+
+### GPU profiling
 
 Show how to profile the GPU and how to interpret the visualized results.
 
-## CPU profiling
+https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/probe-gpu.md
 
-Show how to profile the GPU and how to interpret the visualized results.
+### Network profiling
 
-## Note on transpiling code
-
-Research if ES6 code is faster to execute because of less variable switching due to const's.
-
-## Record and visualizing performance profiles
-
-In order to record and visualize advanced performance profiles you should use `chrome://tracing`.
+https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/probe-net.md
 
 ## Installation
 
-Automatically set up for MacOS:
+To automatically download and setup Chromy Canary on MacOS using Homebrew you can use:
 
 ```sh
 $ ./scripts/setup_macos.sh
 ```
+
+In order to install `V8` and the `D8` shell I recommend following the excellent guide by [Kevin Cennis](https://gist.github.com/kevincennis/0cd2138c78a07412ef21).
 
 ## Usage
 
@@ -94,3 +104,4 @@ $ ./scripts/run.sh <URL>
 - [JavaScript engine fundamentals: Shapes and Inline Caches](https://mathiasbynens.be/notes/shapes-ics)
 - [JavaScript Engines: The Good Parts™ - Mathias Bynens & Benedikt Meurer - JSConf EU 2018](https://www.youtube.com/watch?v=5nmpokoRaZI)
 - [Understanding V8’s Bytecode](https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775)
+- [Visualize JavaScript AST's](https://resources.jointjs.com/demos/javascript-ast)
