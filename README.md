@@ -50,7 +50,9 @@ https://sites.google.com/a/chromium.org/dev/developers/how-tos/submitting-a-perf
 
 ### Memory profiling and garbage collection
 
-One of the main parts of the browser engine developers do not have explicit control over is the garbage collector.
+The essential point of garbage collection is the ability to manage memory usage by an application.
+All management of the memory is done by the browser engine, no ECMAScript API is exposed to web developers to control it.
+The job of the garbage collector is to go through objects that are allocated in memory and determine wheter they are `dead` or `alive`. If an object is not reacheable it is considered dead, is removed from memory and previously allocated memory gets released back to the heap.
 
 - out of scope variables / functions
 - objects that lost their references (name WeakMaps as a possible solution)
@@ -69,10 +71,10 @@ https://chromium.googlesource.com/chromium/src/+/master/docs/profiling.md
 Show how to profile the GPU and how to interpret the visualized results.
 
 https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/probe-gpu.md
-
-### Network profiling
-
-https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/probe-net.md
+https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/OpenGLProfilerUserGuide/Introduction/Introduction.html
+https://renderdoc.org/docs/index.html
+https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/ToolsOverview/ToolsOverview.html
+https://www.html5rocks.com/en/tutorials/games/abouttracing/
 
 ## Installation
 
@@ -105,3 +107,4 @@ $ ./scripts/run.sh <URL>
 - [JavaScript Engines: The Good Parts™ - Mathias Bynens & Benedikt Meurer - JSConf EU 2018](https://www.youtube.com/watch?v=5nmpokoRaZI)
 - [Understanding V8’s Bytecode](https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775)
 - [Visualize JavaScript AST's](https://resources.jointjs.com/demos/javascript-ast)
+- [Garbage collection in V8, an illustrated guide](https://medium.com/@_lrlna/garbage-collection-in-v8-an-illustrated-guide-d24a952ee3b8)
