@@ -6,6 +6,10 @@ Chromium and V8 ship with various built-in tools that help their developers duri
 
 ## Compiler pipeline
 
+To understand what parts of the application are useful to profile one must have a general understanding of the architecture of the compiler pipeline in modern browser engines like V8. The compiler pipelines behind each browser are similar but not at all the same on a technical level. By looking at the V8 pipeline in general terms we can understand what are the core parts of each engine without getting lost in the implementation details.
+
+It is not necessary to understand the intrinsics of each browser engine but it is benificial as a starting point in understanding what is harming the performance of your application.
+
 ### Overview
 
 ```
@@ -30,11 +34,11 @@ Chromium and V8 ship with various built-in tools that help their developers duri
 
 ### Source code
 
-JavaScript source code is `JIT (Just In Time)` compiled meaning it is compiled as it runs. Source code is initially just text. It must be parsed by the `parser` in order to be understood as JavaScript by the browser engine.
+JavaScript source code is `JIT (Just In Time)` compiled meaning it is being compiled to machine code as the program is running. Source code is initially just plain text with a mime-type that identifies it as JavaScript. It must be parsed by a `parser` in order to be understood as JavaScript by the browser engine.
 
 ### Parser
 
-In order for the browser engine to understand the source code it needs to be parsed. Generally the entire JavaScript source code must be parsed before creating an `AST`. A parser generally checks for any syntactical and early errors and the scope of variables.
+The parser generally consists out of a `pre-parser` and a `full-parser`. The `pre-parser` rapidly checks for syntactical and early errors in the program and will throw if it finds any. The `full-parser` evaluates the scope of variables throughout the program and collects basic type information.
 
 ### AST (Abstract Syntax Tree)
 
@@ -43,21 +47,36 @@ The `Abstract Syntax Tree` or in short `AST` is created from the parsed source c
 
 ### Baseline compiler
 
-The goal of the baseline compiler (`Ignition` in `V8`) is to rapidly generate relatively unoptimized `JIT code` as fast as possible and infer general type information to be used in potential further compilation steps. Whilst running, functions that are called often are marked as `hot` and can be a candidate for optimization using the optimizing compiler(s).
+The goal of the baseline compiler (`Ignition` in `V8`) is to rapidly generate relatively unoptimized `machine code` (CPU architecture specific `bytecode` in the case of `Ignition`) as fast as possible and infer general type information to be used in potential further compilation steps. Whilst running, functions that are called often are marked as `hot` and are a candidate for further optimization using the optimizing compiler(s).
 
 ### Optimizing compiler
 
-The optimizing compiler (`Turbofan` in `V8`) recompiles `hot` functions using the previously collected type information to optimize the generated `JIT code` further.
-However, in order to make a faster version of the `JIT code`, the optimizing compiler has to make some assumptions.
-
-For example, if it can assume that all objects created by a particular constructor have the same shape—that is, that they always have the same property names, and that those properties were added in the same order— then it can cut some corners based on that.
-
-The optimizing compiler uses the information the monitor has gathered by watching code execution to make these judgments. If something has been true for all previous passes through a loop, it assumes it will continue to be true. Unfortunately in JavaScript there are no guarantees meaning that shapes can change at any stage over time.
-Due to this lack of guarantees the assumptions of the compiler need to be validated every single time. If it turns out the assumption turned out to be false the `JIT` assumes it made the wrong assumptions, trashes the last version of the optimized code and must step back to a valid de-optimized version because necessary type information will be missing. It is therefore very important that you limit the amount of type changes of an object throughout the lifetime of the program in order to keep the highly optimized `hot` `JIT code` alive.
+The optimizing compiler (`Turbofan` in `V8`) recompiles `hot` functions using previously collected type information to optimize the generated `machine code` further.
+However, in order to make a faster version of the `machine code`, the optimizing compiler has to make some assumptions regarding the shape of the object, that they always have the same property names and order, then the compiler can make further optimisations based on that. If the object shape has been the same throughout the lifetime of the program it is assumed that it will remain that way during future execution. Unfortunately in JavaScript there are no guarantees that this is actually the case meaning that object shapes can change at any stage over time. Due to this lack of guarantees the assumptions of the compiler need to be validated every single time before it runs. If it turns out the assumptions are false the optimizing compiler assumes it made the wrong assumptions, trashes the last version of the optimized code and steps back to a de-optimized version where assumptions are still valid. It is therefore very important that you limit the amount of type changes of an object throughout the lifetime of the program in order to keep the highly optimized code produced by the optimizng compiler alive.
 
 ### Conclusion
 
-When profiling a large part of your effort should go out to the parts of the application that are being optimized and more importantly which parts of the application are being de-optimized. Other things to take into account are optimizing object property access, object shapes and inline caches (`IC's`). JavaScript engines use `IC's` to memorize information on where to find properties on objects to reduce the number of expensive lookups.
+When profiling and optimizing your JavaScript code effort should go out to optimizing the parts of the application that are being optimized (meaning that these functions are `hot`) and more importantly which parts of the application are being de-optimized (likely because types are changing in `hot` parts of the code). Other things to take into account are optimizing object property access, object shapes and inline caches. Inline caches are used to memorize information on where to find properties on objects to reduce the number of expensive lookups.
+
+## Memory profiling and garbage collection
+
+One of the main parts of the browser engine developers do not have explicit control over is the garbage collector.
+
+- out of scope variables / functions
+- objects that lost their references (name WeakMaps as a possible solution)
+- show how to profile the memory over time and give general tips regarding the initialisation of variables and inner functions
+
+## GPU profiling
+
+Show how to profile the GPU and how to interpret the visualized results.
+
+## CPU profiling
+
+Show how to profile the GPU and how to interpret the visualized results.
+
+## Note on transpiling code
+
+Research if ES6 code is faster to execute because of less variable switching due to const's.
 
 ## Record and visualizing performance profiles
 
@@ -90,3 +109,4 @@ $ ./scripts/run.sh <URL>
 - [A crash course in Just In Time (JIT) compilers](https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers/)
 - [JavaScript engine fundamentals: Shapes and Inline Caches](https://mathiasbynens.be/notes/shapes-ics)
 - [JavaScript Engines: The Good Parts™ - Mathias Bynens & Benedikt Meurer - JSConf EU 2018](https://www.youtube.com/watch?v=5nmpokoRaZI)
+- [Understanding V8’s Bytecode](https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775)
