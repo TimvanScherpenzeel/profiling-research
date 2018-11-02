@@ -59,8 +59,8 @@ In order to limit the amount of objects that have to be garbage collected a deve
 
 https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/README.md
 
-- Show how to use the developer tools in order to get a memory profile over time
-- Show how to profile the memory over time and give general tips regarding the initialisation of variables and inner functions
+- Show how to use the developer tools in order to get a memory profile over time using the new JavaScript Profiler tab
+- Show how to profile the memory over time, understand the necessary information
 
 ### CPU profiling
 
