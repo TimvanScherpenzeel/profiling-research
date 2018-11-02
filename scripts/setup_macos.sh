@@ -28,7 +28,7 @@ setup() {
       exit
   else
       for pkg in google-chrome-canary; do
-          if brew list -1 | grep -q "^${pkg}\$"; then
+          if brew cask list -1 | grep -q "^${pkg}\$"; then
               echo "Package '$pkg' is already installed"
           else
               echo "Package '$pkg' is not installed"
