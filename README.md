@@ -51,15 +51,15 @@ The essential point of garbage collection is the ability to manage memory usage 
 
 In order to limit the amount of objects that have to be garbage collected a developer should take the following aspects into account:
 
-- Avoid the initializing or type changing of variables inside of a function you call often
-- Look into the use of a global object pool in order to recycle objects and avoid the dynamic allocation over the lifetime of your application
-- Show how to use the developer tools in order to get a memory profile over time
-- out of scope variables / functions
-- objects that lost their references (name WeakMaps as a possible solution)
-- talk about delete object in order to explicitly mark objects as dead by forcible released all references
-- show how to profile the memory over time and give general tips regarding the initialisation of variables and inner functions
+- Avoid allocating new variables or type changing outer scoped variables inside of a `hot` function
+- Have a look at using a global `object pool` in order to recycle objects and avoid the dynamic allocation over the lifetime of your application. This is a relatively common technique that allows you to have more explicit control over your objects lifetime. This however does come with an upfront cost when initializing and filling the pool and a consistent chunk of memory throughout your applications lifetime. An example of an object pool implementation can be found [here](https://github.com/timvanscherpenzeel/object-pool).
+- Make use of [WeakMaps](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) where possible as they hold "weak" references to key objects, which means that they do not prevent garbage collection in case there would be no other reference to the key object.
+- Avoid associating the `delete` keyword in JavaScript with manual memory management. The `delete` keyword is used to remove properties from objects, not objects or variables as a whole, and is therefore **not** useful to mark objects ready to be garbage collected.
 
 https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/README.md
+
+- Show how to use the developer tools in order to get a memory profile over time
+- Show how to profile the memory over time and give general tips regarding the initialisation of variables and inner functions
 
 ### CPU profiling
 
