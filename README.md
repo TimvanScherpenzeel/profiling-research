@@ -47,26 +47,42 @@ In order to record a clean trace you should keep the recording to a maximum of 1
 
 ### Memory profiling and garbage collection
 
-The essential point of garbage collection is the ability to manage memory usage by an application. All management of the memory is done by the browser engine, no ECMAScript API is exposed to web developers to control it. A garbage collection pauses your application which causes higher latency, dropped frames and thus a major impact on the user experience.
+The essential point of garbage collection is the ability to manage memory usage by an application. All management of the memory is done by the browser engine, no API is exposed to web developers to control it. Web developer can however learn how to structure their programs in order to use the garbage collector to their advantage.
 
-In an overview: The job of the garbage collector is to `mark-and-sweep` or in other words: go through objects that are allocated in memory and determine wheter they are `dead` or `alive`. If an object is unreachable it is considered dead, is removed from memory and previously allocated memory gets released back to the heap.
+All variables in a program are part of the object graph and object variables can reference other variables. Allocating variables is done from the `young memory pool` and is very cheap until the memory pool runs out of memory. Whenever that happens a garbage collection is forced which causes higher latency, dropped frames and thus a major impact on the user experience.
 
-Generally, e.g. in `V8`, the object heap is segmented into two parts: the `young generation` and the `old generation`. The `young generation` consists of `new space` in which new objects are allocated. It allocates fast, frequently collects and collects fast. The `old space` stores objects that are survived enough garbage collector cycles to be promoted to the `old generation`. It allocates fast, infrequently collectes and does slower collection.
+Objects have two sizes: `shallow (self)` and `retained (self + descendents)`. All variables that cannot be reached from the root node are considered as garbage. The job of the garbage collector is to `mark-and-sweep` or in other words: go through objects that are allocated in memory and determine wheter they are `dead` or `alive`. If an object is unreachable it is removed from memory and previously allocated memory gets released back to the heap. Generally, e.g. in `V8`, the object heap is segmented into two parts: the `young generation` and the `old generation`. The `young generation` consists of `new space` in which new objects are allocated. It allocates fast, frequently collects and collects fast. The `old space` stores objects that are survived enough garbage collector cycles to be promoted to the `old generation`. It allocates fast, infrequently collects and does slower collection.
 
 The cost of the garbage collection is proportional to the number of live objects. This is due to a copying mechanism that copies over objects that are still alive into a new space. Most of the time newly allocated objects do not survive long enough in order to become old. It is important to understand that each allocation moves you closer to a garbage collection and every collection pauses the execution of your application. It is therefore important in performance critical applications to strive for a static amount of alive objects and prevent allocating new ones whilst running.
 
 In order to limit the amount of objects that have to be garbage collected a developer should take the following aspects into account:
 
-- Avoid allocating new objects or change types of outer scoped variables inside of a `hot` function.
+- Avoid allocating new objects or change types of outer scoped (or even global) variables inside of a `hot` function.
 - Avoid circular references. A circular reference is formed when two objects reference each other. Memory leaks can occur when the engine and garbage collector fail to identify a circular reference meaning that neither object will ever be destroyed and memory will keep growing over time.
 - A possible solution for the object allocation problem in the `young generation` is the use of an `object pool` that basically pre-allocates a fixed number of objects ahead of time and keeps them alive by recycling them. This is a relatively common technique that allows you to have more explicit control over your objects lifetime. This however does come with an upfront cost when initializing and filling the pool and a consistent chunk of memory throughout your applications lifetime. An example of an object pool implementation can be found [here](https://github.com/timvanscherpenzeel/object-pool).
 - Make use of [WeakMaps](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) where possible as they hold "weak" references to key objects, which means that they do not prevent garbage collection in case there would be no other reference to the key object.
 - Avoid associating the `delete` keyword in JavaScript with manual memory management. The `delete` keyword is used to remove properties from objects, not objects or variables as a whole, and is therefore **not** useful to mark objects ready to be garbage collected.
+- When profiling make sure to run it in an incognito window in a fresh browser instance **without** any browser extensions as they share the same heap as the JavaScript program that you are trying to profile.
 
-https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/README.md
+#### Heap snapshot
 
-- Show how to use the developer tools in order to get a memory profile over time using the new JavaScript Profiler tab (CMD + E)
-- Show how to profile the memory over time, understand the necessary information
+![Heap snapshot](/docs/HEAP_SNAPSHOT.png?raw=true)
+
+In the `Chrome developer tools` panel, in the memory tab, you can find the option to take a `heap snapshot` which shows the memory distribution among your applications JavaScript objects and related DOM nodes. It is important to note that right **before** you click the heap snapshot button a major garbage collection is done. Because of this you can assume that everything that `V8` assumes to be able to garbage collected has already been cleaned up allowing you to get an idea of what `V8` was unable to clean up at the time.
+
+Once you have taken your snapshot you can start inspecting it.
+
+You should ignore everything in parentheses and everything that is dimmed in the `heap snapshot`. These are various constructors that you do not have explicit control over in your application. The snapshot is ordered by the `constructor` name and you can filter the heap to find your constructor using the `class filter` up top. If you record multiple snapshots it is benificial to compare them to each other. You can do this by opening the dropdown menu left of the `class filter` and set it to `comparison`. You can now see the difference between two snapshots. The list will be much shorter and you can see more easily what has changed in memory. Objects in the `heap snapshot` with a yellow background are an indicator that there is no active handle available meaning that these objects will be difficult to clean up as you have probably lost its reference to it. Most likely it is still in the DOM tree but you lost your JavaScript reference to it. Objects with a red background in the `heap snapshot` are considered objects that have been detatched from the DOM tree but their JavaScript reference is being retained because of whatever reason. A DOM node can only be garbage collected when there are no references to it from either the page's DOM tree or JavaScript code. A node is said to be "detached" when it's removed from the DOM tree but some JavaScript still references it. Detached DOM nodes are a common cause of memory leaks.
+
+For more information there is an excellent [entry](https://developers.google.com/web/tools/chrome-devtools/memory-problems/) on the Chrome developer tools blog.
+
+#### Three snapshot technique
+
+A recommended technique for capturing and analyzing snapshots is to do three captures and do comparisons between them as shown in the following graphic.
+
+![Three snapshot technique](/docs/THREE_SNAPSHOT_TECHNIQUE.png?raw=true)
+
+_Image source: Google Developers Live - https://www.youtube.com/watch?v=L3ugr9BJqIs_
 
 ### CPU profiling
 
@@ -106,6 +122,8 @@ $ ./scripts/run.sh <URL>
 
 ## Resources
 
+- [The Breakpoint Ep. 8: Memory Profiling with Chrome DevTools](https://www.youtube.com/watch?v=L3ugr9BJqIs)
+- [V8 Garbage Collector](https://github.com/thlorenz/v8-perf/blob/master/gc.md#heap-organization-in-detail)
 - [Google I/O 2013 - Accelerating Oz with V8: Follow the Yellow Brick Road to JavaScript Performance](https://www.youtube.com/watch?v=VhpdsjBUS3g)
 - [Franziska Hinkelmann - Performance Profiling for V8 / Script17 (Slides)](https://fhinkel.rocks/PerformanceProfiling/assets/player/KeynoteDHTMLPlayer.html#3)
 - [Franziska Hinkelmann - Performance Profiling for V8 / Script17 (Video)](https://www.youtube.com/watch?v=j6LfSlg8Fig)
