@@ -10,7 +10,7 @@ It is not necessary to understand the intrinsics of each browser engine but it i
 
 ## Compiler pipeline
 
-![V8 compiler pipeline](/docs/V8_COMPILER_PIPELINE.png?raw=true)
+![V8 compiler pipeline](/docs/V8_COMPILER_PIPELINE.jpg?raw=true)
 
 _Image source: Franziska Hinkelmann - https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775_
 
@@ -66,7 +66,7 @@ In order to limit the amount of objects that have to be garbage collected a deve
 
 #### Heap snapshot
 
-![Heap snapshot](/docs/HEAP_SNAPSHOT.png?raw=true)
+![Heap snapshot](/docs/HEAP_SNAPSHOT.jpg?raw=true)
 
 In the `Chrome developer tools` panel, in the memory tab, you can find the option to take a `heap snapshot` which shows the memory distribution among your applications JavaScript objects and related DOM nodes. It is important to note that right **before** you click the heap snapshot button a major garbage collection is done. Because of this you can assume that everything that `V8` assumes to be able to garbage collected has already been cleaned up allowing you to get an idea of what `V8` was unable to clean up at the time.
 
@@ -91,7 +91,7 @@ For more information there are excellent entries on the Chrome developer tools b
 
 A recommended technique for capturing and analyzing snapshots is to do three captures and do comparisons between them as shown in the following graphic.
 
-![Three snapshot technique](/docs/GOOGLE_THREE_SNAPSHOT_TECHNIQUE.png?raw=true)
+![Three snapshot technique](/docs/GOOGLE_THREE_SNAPSHOT_TECHNIQUE.jpg?raw=true)
 
 _Image source: Google Developers Live - https://www.youtube.com/watch?v=L3ugr9BJqIs_
 
