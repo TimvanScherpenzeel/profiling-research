@@ -80,7 +80,12 @@ Objects with a red background in the `heap snapshot` are considered objects that
 
 In general, you want to focus on the yellow nodes in the `heap snapshot`. Fix your code so that the yellow node isn't alive for longer than it needs to be, and you also get rid of the red nodes that are part of the yellow node's tree.
 
-For more information there is an excellent [entry](https://developers.google.com/web/tools/chrome-devtools/memory-problems/) on the Chrome developer tools blog.
+For more information there are excellent entries on the Chrome developer tools blog on memory profiling:
+
+- [Fix memory problems](https://developers.google.com/web/tools/chrome-devtools/memory-problems/)
+- [Understand memory terminology](https://developers.google.com/web/tools/chrome-devtools/memory-problems/memory-101)
+- [Record Heap Snapshots](https://developers.google.com/web/tools/chrome-devtools/memory-problems/heap-snapshots)
+- [Use the Allocation Profiler](https://developers.google.com/web/tools/chrome-devtools/memory-problems/allocation-profiler)
 
 #### Three snapshot technique
 
