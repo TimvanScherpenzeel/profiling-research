@@ -80,7 +80,7 @@ For more information there is an excellent [entry](https://developers.google.com
 
 A recommended technique for capturing and analyzing snapshots is to do three captures and do comparisons between them as shown in the following graphic.
 
-![Three snapshot technique](/docs/THREE_SNAPSHOT_TECHNIQUE.png?raw=true?v1)
+![Three snapshot technique](/docs/GOOGLE_THREE_SNAPSHOT_TECHNIQUE.png?raw=true)
 
 _Image source: Google Developers Live - https://www.youtube.com/watch?v=L3ugr9BJqIs_
 
