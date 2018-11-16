@@ -173,14 +173,13 @@ Often the shadow map rendering is bound by the vertex shader, except if you have
 Highly tessellated meshes, where the wireframe appears as a solid color, can suffer from poor quad utilization. This is because GPUs process triangles in 2x2 pixel blocks and reject pixels outside of the triangle a bit later. This is needed for mip-map computations. For larger triangles, this is not a problem, but if triangles are small or very lengthy the performance can suffer as many pixels are processed but few actually contribute to the image.
 
 If you are vertex shader bound you can look at the following optimisation techniques:
+- Verify that the vertex count on your models in reasonable for real-time usage.
 - Avoid using too many vertices (use LOD meshes).
-- Use `Vertex Array Objects` where possible (almost always available in WebGL, always available in WebGL2).
 - Verify your LOD is setup with aggressive transition ranges. A LOD should use vertex count by at least 2x. To optimize this, check the wireframe, solid colors indicate a problem.
 - Avoid using complex world position offsets (morph targets, vertex displacement using textures with poor mip-mapping)
 - Avoid tessellation if possible (if necessary be sure to limit the tessellation factor to a reasonable amount). Pretesselated meshes are usually faster.
 - Very large meshes can be split up for better view culling.
-- Avoid using too many vertex attributes.
-- Verify that the vertex count on your models in reasonable.
+- Avoid using too many vertex attributes, use `Vertex Array Objects` where possible (almost always available in WebGL, always available in WebGL2).
 - Billboards, imposter meshes or skybox textures can be used to efficiently fake detailed geometry when a mesh is far in the distance.
 
 In `Chrome` there are various ways to profile the GPU:
