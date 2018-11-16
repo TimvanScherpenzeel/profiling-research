@@ -178,7 +178,7 @@ If you are vertex shader bound you can look at the following optimisation techni
 - Verify your LOD is setup with aggressive transition ranges. A LOD should use vertex count by at least 2x. To optimize this, check the wireframe, solid colors indicate a problem.
 - Avoid using complex world position offsets (morph targets, vertex displacement using textures with poor mip-mapping)
 - Avoid tessellation if possible (if necessary be sure to limit the tessellation factor to a reasonable amount). Pretesselated meshes are usually faster.
-- Very large meshes can be split up for better view culling.
+- Very large meshes can be split up into multiple parts for better view culling.
 - Avoid using too many vertex attributes, use `Vertex Array Objects` where possible (almost always available in WebGL, always available in WebGL2).
 - Billboards, imposter meshes or skybox textures can be used to efficiently fake detailed geometry when a mesh is far in the distance.
 
