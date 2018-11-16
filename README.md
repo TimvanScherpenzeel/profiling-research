@@ -168,7 +168,7 @@ In general you should look at using the following optimisation techniques:
 - Do as much as you can in the vertex shader rathe than in the fragment shader because, per rendering pass, fragment shaders run many more times than vertex shaders, any calculation that can be done on the vertices and then just interpolated among fragments is a performance benefit (this interpolation is done "automagically" for you, through the fixed functionality rasterization phase of the WebGL pipeline).
 - Reduce the amount of WebGL state changes by caching and mirroring the state on the JavaScript. By diffing the state in JavaScript you can drastically reduce the amount of expensive WebGL state changes.
 - Avoid anything that requires synching the CPU and GPU as it is potentially very slow. Cache WebGL getter calls such as `getParameter` and `getUniformLocation` in JavaScript variables and only programtically use `setParameter` after making sure you actually need to set the parameter by checking the mirrored WebGL state in JavaScript.
-- Cull any geometry that won't be visible.
+- Cull any geometry that won't be visible (octree, BVH, kd-tree, quadtree) through occlusion culling, viewport culling or backface culling.
 - Group mesh submissions with the same state in order to prevent unnecessary WebGL state switches.
 - Limit the size of the canvas and do not directly use the device's pixel ratio but rather artifically limit it to a point where visual fidelity is acceptable yet performant.
 - Turn off the canvas's native anti-aliasing option, instead anti-alias once during postprocessing using FXAA, SMAA or similar in the fragment shader.
