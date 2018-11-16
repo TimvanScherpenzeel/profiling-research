@@ -174,7 +174,7 @@ In general you should look at using the following optimisation techniques:
 - Turn off the canvas's native anti-aliasing option, instead anti-alias once during postprocessing using FXAA, SMAA or similar in the fragment shader.
 - Disable alpha blending and disable the preserving of the drawing buffer when creating the WebGL canvas.
 
-If you are fragment shader bound you can look at the following optimisation techniques:
+If you are **fragment shader** bound you can look at the following optimisation techniques:
 - Avoid having to resize textures to be a power of two during runtime. This is unnecessary in WebGL2 but it is still highly recommended to use power of two textures for a more efficient memory layout. NPOT textures may be handled noticeable slower and can cause black edging artifacts by mip-map interpolation.
 - Avoid using too many uniforms, use `Uniform Buffer Objects` and `Uniform Block`'s where possible.
 - Reduce the amount of stationary and dynamic lights in your scene. Pre-bake where possible.
@@ -193,7 +193,7 @@ Often the shadow map rendering is bound by the vertex shader, except if you have
 
 Highly tessellated meshes, where the wireframe appears as a solid color, can suffer from poor quad utilization. This is because GPUs process triangles in 2x2 pixel blocks and reject pixels outside of the triangle a bit later. This is needed for mip-map computations. For larger triangles, this is not a problem, but if triangles are small or very lengthy the performance can suffer as many pixels are processed but few actually contribute to the image.
 
-If you are vertex shader bound you can look at the following optimisation techniques:
+If you are **vertex shader** bound you can look at the following optimisation techniques:
 - Verify that the vertex count on your models in reasonable for real-time usage.
 - Avoid using too many vertices (use LOD meshes).
 - Verify your LOD is setup with aggressive transition ranges. A LOD should use vertex count by at least 2x. To optimize this, check the wireframe, solid colors indicate a problem.
