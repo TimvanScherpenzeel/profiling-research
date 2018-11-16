@@ -154,6 +154,8 @@ The GPU has many processing units working in parallel and it is common to be bou
 In order to know if you are pixel bound one can try varying the viewport resolution. If you see a measurable performance change it likely means that you are bound by something pixel related. Usually it is either memory bandwidth (reading and writing), math bound ([ALU](https://en.wikipedia.org/wiki/Arithmetic_logic_unit)), but in rare casese, some specific units are saturated. If you can lower the memory (or math) on the relevant passes and see a performance difference you know it was bound by the memory bandwidth (or the ALU units).
 
 If you are fragment shader bound you can look at the following optimisation techniques:
+- Avoid having to resize textures to be a power of two during runtime.
+- Avoid using too many uniforms, use `Uniform Buffer Objects` and `Uniform Block`'s where possible.
 - Reduce the amount of stationary and dynamic lights in your scene. Pre-bake where possible.
 - Try to combine lights that have a similar origin.
 - Limit the attenuation radius and light cone angle to the minimum needed.
@@ -172,6 +174,7 @@ Highly tessellated meshes, where the wireframe appears as a solid color, can suf
 
 If you are vertex shader bound you can look at the following optimisation techniques:
 - Avoid using too many vertices (use LOD meshes).
+- Use `Vertex Array Objects` where possible (almost always available in WebGL, always available in WebGL2).
 - Verify your LOD is setup with aggressive transition ranges. A LOD should use vertex count by at least 2x. To optimize this, check the wireframe, solid colors indicate a problem.
 - Avoid using complex world position offsets (morph targets, vertex displacement using textures with poor mip-mapping)
 - Avoid tessellation if possible (if necessary be sure to limit the tessellation factor to a reasonable amount). Pretesselated meshes are usually faster.
