@@ -147,10 +147,10 @@ If you are CPU bound when rendering it is likely because of too many draw calls.
 In order to reduce the mesh draw calls one can use the following techniques:
 - Reduce the object count (e.g. static meshes, dynamic meshes and mesh particles)
 - Reduce the view distance
-- Adjusting the field of view
-- Reducing the amount of elements per draw call (e.g. combine textures into texture maps, use LOD models)
+- Adjust the field of view of your camera's to be smaller in order to have less objects in the view frustum.
+- Reduce the amount of elements per draw call (e.g. combine textures into texture maps, use LOD models)
 - Disable features on a mesh like custom depth, shadow casting and shadow receiving.
-- Changing light sources to not shadow cast or have a tighter bounding volume (view cone, attenuation radius)
+- Change light sources to not shadow cast or have a tighter bounding volume (view cone, attenuation radius)
 - Use hardware instancing where possible as it reduces the driver overhead per draw call (e.g. mesh particles)
 
 If you are CPU bound by other parts of your application there is likely some other issue in your codebase.
