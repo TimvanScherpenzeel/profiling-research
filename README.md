@@ -97,7 +97,7 @@ _Image source: Google Developers Live - https://www.youtube.com/watch?v=L3ugr9BJ
 
 ### CPU profiling
 
-In order to know if you are CPU bound you must profile the CPU and analyze the capture.
+In order to know if you are CPU bound you must profile the CPU. Most of the time it makes sense to keep an eye on realtime performance measures and when in doubt capture a CPU trace.
 
 If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problems and the solution is often to combine draw calls to reduce the cost. This quite often means combining several meshes into a single mesh. The actual cost of the CPU is in many areas. The renderer needs to process each object (culling, material, lighting, collision, update). The more complex your materials the higher the cost at creation time. The renderer needs to prepare GPU commands to set up state for each draw call and do the actual API call. In WebGL there is a small but significant overhead due to strict validation of the shader code. The underlying graphics driver validates the commands futher and creates a command buffer for the hardware.
 
@@ -120,7 +120,7 @@ https://chromium.googlesource.com/chromium/src/+/master/docs/profiling.md
 
 ### GPU profiling
 
-In order to know if you are GPU bound you must profile the GPU.
+In order to know if you are GPU bound you must profile the GPU. Most of the time it makes sense to keep an eye on realtime performance measures and when in doubt capture a GPU trace.
 
 The GPU has many processing units working in parallel and it is common to be bound by different units for different parts of the frame. Because of this, it makes sense to look at finding where the GPU cost is going when looking for the GPU bottleneck. Common ways your can be GPU bound are the application being draw call heavy, complex materials, dense triangle meshes and a large view frustum).
 
