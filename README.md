@@ -103,17 +103,23 @@ https://chromium.googlesource.com/chromium/src/+/master/docs/profiling.md
 
 ### GPU profiling
 
+There are several ways to profile a GPU.
+
 Show how to profile the GPU and how to interpret the visualized results.
 
 https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/probe-gpu.md
 
-https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/OpenGLProfilerUserGuide/Introduction/Introduction.html
-
-https://renderdoc.org/docs/index.html
-
 https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/ToolsOverview/ToolsOverview.html
 
 https://www.html5rocks.com/en/tutorials/games/abouttracing/
+
+### GPU debugging
+
+There are several ways one can debug WebGL and the native OpenGL instructions using an external debugger like [RenderDoc](https://renderdoc.org/docs/index.html) or [APITrace](https://github.com/apitrace/apitrace). Instructions on how to use debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
+
+For tracing an individual frame without setting up an external debugger I highly recommend using the Chrome extension [Spector.js](https://spector.babylonjs.com/).
+
+Finally one can also wrap the `WebGLRenderingContext` with a debugging wrapper like the [one provided by the Khronos Group](https://www.npmjs.com/package/webgl-debug) to catch invalid WebGL operations and give the errors a bit more context. This comes with a large overhead as every single instruction is traced (and optionally logged to the console so make sure to only optionally include the dependency in development.
 
 ## Installation
 
