@@ -161,12 +161,12 @@ If you are fragment shader bound you can look at the following optimisation tech
 - Limit the amount of post-processing steps.
 - Disable shadow casting where possible, either per object or per light.
 - Reduce the shadow map resolution.
-- Make use of the multi-render target extension when using deferred rendering (`WEBGL_draw_buffers`). Be aware that this extension is not available everywhere in `WebGL`. It fortunately is a part of the `WebGL2` core spec making it available everywhere where the `WebGL2` spec is implemented correctly.
-- Materials with few shader instructions and texture lookups run faster.
-- Never disable mipmaps if the texture can be seen in a smaller scale, to avoid slowdowns due to texture cache misses.
-- Make use of GPU compressed textures where possible as smaller texture formats result in a faster material with a smaller memory footprint.
+- Make use of the multi-render target extension `WEBGL_draw_buffers` when using deferred rendering. Be aware that this extension is not available everywhere where `WebGL` is available. It fortunately is a part of the `WebGL2` core spec making it available everywhere where the `WebGL2` spec is implemented correctly.
+- Materials with fewer shader instructions and texture lookups run faster.
+- Never disable mipmaps if the texture can be seen in a smaller scale to avoid slowdowns due to texture cache misses.
+- Make use of GPU compressed textures and lower bitrate texture formats in order to reduce the in-memory GPU footprint.
 
-Often the shadow map rendering is bound by vertex shader, except if you have very large areas of shadow casting masked or translucent materials. Possible causes could be dense meshes, no LOD, usage of tessellation or relying too much world position offsets. Shadow map rendering cost scales with the number of dynamic lights in the scene, number of shadow casting objects in the light frustum and the number of cascades. This is a very common bottleneck and only larger content changes can reduce the cost.
+Often the shadow map rendering is bound by the vertex shader, except if you have very large areas of shadow casting masked or translucent materials. Possible causes could be dense meshes, a lack of LOD, usage of tessellation or complex world position offsets. Shadow map rendering cost scales with the number of dynamic lights in the scene, number of shadow casting objects in the light frustum and the number of cascades. This is a very common bottleneck and only larger content changes can reduce the cost.
 
 Highly tessellated meshes, where the wireframe appears as a solid color, can suffer from poor quad utilization. This is because GPUs process triangles in 2x2 pixel blocks and reject pixels outside of the triangle a bit later. This is needed for mip-map computations. For larger triangles, this is not a problem, but if triangles are small or very lengthy the performance can suffer as many pixels are processed but few actually contribute to the image.
 
