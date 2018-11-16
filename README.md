@@ -1,5 +1,7 @@
 # Profiling research
 
+Research on advanced profiling of high-performance web applications.
+
 * [Introduction](#introduction)
 
 * [Compiler pipeline](#compiler-pipeline)
