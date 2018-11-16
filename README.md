@@ -29,11 +29,11 @@ Research on advanced profiling of high-performance web applications.
 
 ## Introduction
 
-In order to profile the performance of a web application one would usually use the browsers built-in developer tools. Every once in a while however there comes a time when a developer needs a better understanding of a performance issue in order to solve it. In order to get that understanding the developer needs access to low-level optimisations, de-optimisations and caching techniques in modern browser engines. Due to security restrictions in the browser it is only really possible to get this low-level information from browsers by enabling various flags when launching the browser locally.
+In order to profile the performance of a web application one would usually use the browsers built-in developer tools. Every once in a while however there comes a time when a developer needs a better understanding of a performance issue in order to solve it. In order to get that understanding the developer needs access and an understanding of the low-level optimisations, de-optimisations and caching techniques in modern browser engines. Due to security restrictions in the browser it is only really possible to get this low-level information from browsers by enabling various flags when launching the browser locally.
 
-`Chromium` and `V8` ship with various built-in tools that help their developers during development of the browser and engine. Luckily we, as web developer, can leverage these same tools to get a better understanding of what is happening under the hood.
+`Chromium` and `V8` ship with various built-in tools that help their developers during development of the browser and engine. Luckily we can, as a web developer, leverage these same tools to get a better understanding of what is happening under the hood.
 
-To understand what parts of the application are useful to profile one must have a general understanding of the architecture of the compiler pipeline in modern browser engines like `V8`. The compiler pipelines behind each browser are similar but not at all the same on a technical level. By looking at the `V8` pipeline in general terms we can understand what are the core parts of each engine without getting lost in the implementation details.
+To understand what parts of the application are useful to profile one must have a general understanding of the architecture of the compiler pipeline in modern browser engines like `V8`. The compiler pipelines behind each browser are similar but not at all the same on a technical level. By looking at the `V8` pipeline in general terms we can understand what the core parts of a browser engine is without getting lost in the implementation details.
 
 It is not necessary to understand the intrinsics of each browser engine but it is beneficial as a starting point in understanding what is harming the performance of your application.
 
@@ -45,7 +45,7 @@ _Image source: Franziska Hinkelmann - https://medium.com/dailyjs/understanding-v
 
 ### Source code
 
-JavaScript source code is `JIT (Just In Time)` compiled meaning it is being compiled to machine code as the program is running. Source code is initially just plain text with a mime-type that identifies it as JavaScript. It must be parsed by a `parser` in order to be understood as JavaScript by the browser engine.
+JavaScript source code is `JIT (Just In Time)` compiled meaning it is being compiled to machine code as the program is running. Source code is initially just plain text with a mime-type that identifies it as JavaScript code. It must be parsed by a `parser` in order to be understood as JavaScript code by the browser engine.
 
 ### Parser
 
@@ -53,7 +53,7 @@ The parser generally consists out of a `pre-parser` and a `full-parser`. The `pr
 
 ### AST
 
-The `Abstract Syntax Tree` or in short `AST` is created from the parsed source code.
+An `Abstract Syntax Tree` or in short `AST` is created from the parsed source code.
 `AST's` are data structures widely used in compilers, due to their property of representing the structure of program code. An `AST` is usually the result of the syntax analysis phase of a compiler, a tree representation of the abstract syntactic structure of source code. Each node of the tree denotes a construct occurring in the source code. It is beneficial to get a good understanding of what `AST's` are as they are very oftenly used in pre-processors, code generators, minifiers, transpilers, linters and codemods.
 
 ### Baseline compiler
@@ -62,25 +62,25 @@ The goal of the baseline compiler (`Ignition` in `V8`) is to rapidly generate re
 
 ### Optimizing compiler
 
-The optimizing compiler (`Turbofan` in `V8`) recompiles `hot` functions using previously collected type information to optimize the generated `machine code` further. However, in order to make a faster version of the `machine code`, the optimizing compiler has to make some assumptions regarding the shape of the object, that they always have the same property names and order, then the compiler can make further optimisations based on that. If the object shape has been the same throughout the lifetime of the program it is assumed that it will remain that way during future execution. Unfortunately in JavaScript there are no guarantees that this is actually the case meaning that object shapes can change at any stage over time. Due to this lack of guarantees the assumptions of the compiler need to be validated every single time before it runs. If it turns out the assumptions are false the optimizing compiler assumes it made the wrong assumptions, trashes the last version of the optimized code and steps back to a de-optimized version where assumptions are still valid. It is therefore very important that you limit the amount of type changes of an object throughout the lifetime of the program in order to keep the highly optimized code produced by the optimizing compiler alive.
+The optimizing compiler (`Turbofan` in `V8`) recompiles `hot` functions using previously collected type information to optimize the generated `machine code` further. However, in order to make a faster version of the `machine code`, the optimizing compiler has to make some assumptions regarding the shape of the object, namely that they always have the same property names and order. Based on that the compiler can then make further optimisations. If the object shape has been the same throughout the lifetime of the program it is assumed that it will remain that way during future execution. Unfortunately in JavaScript there are no guarantees that this is actually the case meaning that object shapes can change at any stage over time. Due to this lack of guarantees the assumptions of the compiler need to be validated every single time before it runs. If it turns out the assumptions are false the optimizing compiler assumes it made the wrong assumptions, trashes the last version of the optimized code and steps back to a de-optimized version where assumptions are still valid. It is therefore very important that you limit the amount of type changes of an object throughout the lifetime of the program in order to keep the highly optimized code produced by the optimizing compiler alive. In the worst case scenario the object ends up in `de-optimized hell` and will never be picked up again to be optimized.
 
 ### Conclusion
 
-When profiling and optimizing your JavaScript code effort should go out to optimizing the parts of the application that are being optimized by the optimizing compiler, meaning that these functions are `hot`, and more importantly which parts of the application are being de-optimized. De-optimization likely happens because types are changing in `hot` parts of the code or certain optimizations are not yet implemented by the compiler (such as `try catch` a few years ago). It is important to note that whilst you should pay attention when using these unoptimized implementations you should use them and report to the browser engines that you are using these features. If a certain de-optimization shows up a lot in heuristics and performance bug reports it is likely to be picked up by the engine maintainers as a priority. Other things to take into account are optimizing object property access, maintaining object shapes and understand the power of inline caches. Inline caches are used to memorize information on where to find properties on objects to reduce the number of expensive lookups.
+When profiling and optimizing your JavaScript code part of your effort should go out to optimizing the parts of the application that are being optimized by the optimizing compiler, meaning that these functions are `hot`, and more importantly which parts of the application are being de-optimized. De-optimization likely happens because types are changing in `hot` parts of the code or certain optimizations are not yet implemented by the compiler (such as `try catch` a few years ago, which has since been fixed). It is important to note that whilst you should pay attention when using these unoptimized implementations you should use them and report to the browser engines that you are using these features. If a certain de-optimization shows up a lot in heuristics and performance bug reports it is likely to be picked up by the engine maintainers as a priority. Other things to take into account are optimizing object property access, maintaining object shapes and understand the power of inline caches (monomorphic, polymorphic, megamorphic). Inline caches are used to memorize information on where to find properties on objects to reduce the number of expensive lookups.
 
 ## Profiling
 
-Besides the browser's built-in sampling profiler `Chrome developer tools` and the structural profiler available in `chrome://tracing` one can start the browser from the command line with flags to enable the tracing of various parts of the web application.
+Besides the browser's built-in sampling profilers available in `Chrome developer tools` and the structural profiler available in `chrome://tracing` one can start the browser from the command line with flags to enable the tracing of various parts of the web application.
 
-Please note that any traces recorded with the tool will contains all currently opened resources (tabs, extensions, subresources) with the browser. Make sure that `Chrome` starts without any other resources active in order to be able to get a relatively clean trace. In order to record a clean trace you should keep the recording to a maximum of 10 seconds, focus on a single activity per recording and leave the computer completely idle for 2 seconds before and after each recording. This will help making the slow process stand out amongst the other recorded data.
+Please note that any traces recorded with the tool will contains all currently opened resources (tabs, extensions, subresources) with the browser. Make sure that `Chrome` starts without any other resources (other tabs, extensions, profile) active in order to be able to get a relatively clean trace. In order to record a clean trace you should keep the recording to a maximum of 10 seconds, focus on a single activity per recording and leave the computer completely idle for 2 seconds before and after each recording. This will help making the slow process stand out amongst the other recorded data.
 
 ### Memory profiling and garbage collection
 
-The essential point of garbage collection is the ability to manage memory usage by an application. All management of the memory is done by the browser engine, no API is exposed to web developers to control it. Web developer can however learn how to structure their programs in order to use the garbage collector to their advantage.
+The essential point of garbage collection is the ability to manage memory usage by an application. All management of the memory is done by the browser engine, no API is exposed to web developers to control it explicitly. Web developers can however learn how to structure their programs in order to use the garbage collector to their advantage and avoid the generation of garbage.
 
 All variables in a program are part of the object graph and object variables can reference other variables. Allocating variables is done from the `young memory pool` and is very cheap until the memory pool runs out of memory. Whenever that happens a garbage collection is forced which causes higher latency, dropped frames and thus a major impact on the user experience.
 
-All variables that cannot be reached from the root node are considered as garbage. The job of the garbage collector is to `mark-and-sweep` or in other words: go through objects that are allocated in memory and determine whether they are `dead` or `alive`. If an object is unreachable it is removed from memory and previously allocated memory gets released back to the heap. Generally, e.g. in `V8`, the object heap is segmented into two parts: the `young generation` and the `old generation`. The `young generation` consists of `new space` in which new objects are allocated. It allocates fast, frequently collects and collects fast. The `old space` stores objects that are survived enough garbage collector cycles to be promoted to the `old generation`. It allocates fast, infrequently collects and does slower collection.
+All variables that cannot be reached from the root node are considered as garbage. The job of the garbage collector is to `mark-and-sweep` or in other words: go through objects that are allocated in memory and determine whether they are `dead` or `alive`. If an object is unreachable it is removed from memory and previously allocated memory gets released back to the heap. Generally, e.g. in `V8`, the object heap is segmented into two parts: the `young generation` and the `old generation`. The `young generation` consists of `new space` in which new objects are allocated. It allocates fast, frequently collects and collects fast. The `old space` stores objects that survived enough garbage collector cycles to be promoted to the `old generation`. It allocates fast, infrequently collects and does slower collection.
 
 The cost of the garbage collection is proportional to the number of live objects. This is due to a copying mechanism that copies over objects that are still alive into a new space. Most of the time newly allocated objects do not survive long enough in order to become old. It is important to understand that each allocation moves you closer to a garbage collection and every collection pauses the execution of your application. It is therefore important in performance critical applications to strive for a static amount of alive objects and prevent allocating new ones whilst running.
 
@@ -95,7 +95,7 @@ In order to limit the amount of objects that have to be garbage collected a deve
 
 #### Heap snapshot
 
-In the `Chrome developer tools` panel, in the memory tab, you can find the option to take a `heap snapshot` which shows the memory distribution among your applications JavaScript objects and related DOM nodes. It is important to note that right **before** you click the heap snapshot button a major garbage collection is done. Because of this you can assume that everything that `V8` assumes to be able to garbage collected has already been cleaned up allowing you to get an idea of what `V8` was unable to clean up at the time.
+In the `Chrome developer tools` panel, in the memory tab, you can find the option to take a `heap snapshot` which shows the memory distribution among your application's JavaScript objects and related DOM nodes. It is important to note that right **before** you click the heap snapshot button a major garbage collection is done. Because of this you can assume that everything that `V8` assumes to be able to garbage collected has already been cleaned up allowing you to get an idea of what `V8` was unable to clean up at the time.
 
 ![Heap snapshot button](/docs/HEAP_SNAPSHOT_BUTTON.png?raw=true)
 
@@ -103,17 +103,17 @@ _Image source: Google Developers - https://developers.google.com/web/tools/chrom
 
 Once you have taken your snapshot you can start inspecting it.
 
-You should ignore everything in parentheses and everything that is dimmed in the `heap snapshot`. These are various constructors that you do not have explicit control over in your application. The snapshot is ordered by the `constructor` name and you can filter the heap to find your constructor using the `class filter` up top. If you record multiple snapshots it is beneficial to compare them to each other. You can do this by opening the dropdown menu left of the `class filter` and set it to `comparison`. You can now see the difference between two snapshots. The list will be much shorter and you can see more easily what has changed in memory.
+You should ignore everything in parentheses and everything that is dimmed in the `heap snapshot`. These are various constructors that you do not have explicit control over in your application (such as native methods and global browser methods). The snapshot is ordered by the `constructor` name and you can filter the heap to find your constructor using the `class filter` up top. If you record multiple snapshots it is beneficial to compare them to each other. You can do this by opening the dropdown menu left of the `class filter` and set it to `comparison`. You can now see the difference between two snapshots. The list will be much shorter and you can see more easily what has changed in memory.
 
 ![Heap snapshot trace](/docs/HEAP_SNAPSHOT_TRACE_DETACHED.png?raw=true)
 
 _Image source: Google Developers - https://developers.google.com/web/tools/chrome-devtools/memory-problems/_
 
-Objects in the `heap snapshot` with a **yellow background** are an indicator that there is no active handle available meaning that these objects will be difficult to clean up as you have probably lost its reference to it. Most likely it is still in the DOM tree but you lost your JavaScript reference to it.
+Objects in the `heap snapshot` with a **yellow background** are an indicator that there is no active event handle available meaning that these objects will be difficult to clean up as you have probably lost its reference to it. Most likely it is still in the DOM tree but you have lost your JavaScript reference.
 
-Objects with a **red background** in the `heap snapshot` are considered objects that have been detached from the DOM tree but their JavaScript reference is being retained. A DOM node can only be garbage collected when there are no references to it from either the page's DOM tree or JavaScript code. A node is said to be "detached" when it's removed from the DOM tree but some JavaScript still references it. Detached DOM nodes are a common cause of memory leaks. They are only alive because they are part of the yellow node's tree.
+Objects with a **red background** in the `heap snapshot` are considered objects that have been detached from the DOM tree but their JavaScript reference is being retained. A DOM node can only be garbage collected when there are no references to it from either the page's DOM tree or JavaScript code. A node is said to be `detached` when it's removed from the DOM tree but some JavaScript still references it. Detached DOM nodes are a common cause of memory leaks. They are only alive because they are part of a yellow node's tree.
 
-In general, you want to focus on the yellow nodes in the `heap snapshot`. Fix your code so that the yellow node isn't alive for longer than it needs to be, and you also get rid of the red nodes that are part of the yellow node's tree.
+In general, you want to focus on the yellow nodes in the `heap snapshot`. Fix your code so that the yellow node isn't alive for longer than it needs to be, that way you also get rid of the red nodes that are part of the yellow node's tree.
 
 For more information there are excellent entries on the `Chrome developer tools` blog on memory profiling:
 
@@ -124,7 +124,7 @@ For more information there are excellent entries on the `Chrome developer tools`
 
 #### Three snapshot technique
 
-A recommended technique for capturing and analyzing snapshots is to do three captures and do comparisons between them as shown in the following graphic.
+A recommended technique for capturing and analyzing snapshots is to make three captures and do comparisons between them as shown in the following graphic:
 
 ![Three snapshot technique](/docs/GOOGLE_THREE_SNAPSHOT_TECHNIQUE.jpg?raw=true)
 
@@ -132,7 +132,7 @@ _Image source: Google Developers Live - https://www.youtube.com/watch?v=L3ugr9BJ
 
 ### CPU profiling
 
-In order to know if you are CPU bound you must profile the CPU. Most of the time it makes sense to keep an eye on real-time performance measures and when in doubt capture a CPU trace.
+In order to know if you are CPU bound you must profile the CPU. Most of the time it makes sense to keep an eye on real-time CPU usage and only when in doubt capture a CPU trace.
 
 In `Chrome` there is a useful live CPU usage and runtime performance visualizer available in the `performance monitor` tab.
 
@@ -142,9 +142,12 @@ More advanced captures over period of time can be done using the performance cap
 
 ![Performance tracer](/docs/CPU_TRACE_PROFILER.png?raw=true)
 
-If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problems and the solution is often to combine draw calls to reduce the cost. This quite often means combining several meshes into a single mesh. The actual cost of the CPU is in many areas. The renderer needs to process each object (culling, material, lighting, collision, update). The more complex your materials the higher the cost at creation time. The renderer needs to prepare GPU commands to set up state for each draw call and do the actual API call. In WebGL there is a small but significant overhead due to strict validation of the shader code. The underlying graphics driver validates the commands further and creates a command buffer for the hardware.
+If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problem and the solution is often to combine draw calls to reduce the cost. 
+
+There is however a lot more going on than just draw calls. The renderer needs to process and update each object (culling, material, lighting, collision) on every frame tick. The more complex your materials (math, textures) the higher the cost at creation time and the more expensive it is to run at runtime. In WebGL there is a small but significant overhead due to strict validation of the shader code. The underlying graphics driver validates the commands further and creates a command buffer for the hardware. In a browser a lot more is going on than just the WebGL rendering context.
 
 In order to reduce the mesh draw calls one can use the following techniques:
+- Combine meshes into a single mesh to reduce the amount of necessary draw calls.
 - Reduce the object count (e.g. static meshes, dynamic meshes and mesh particles).
 - Reduce the far view distance on your camera's.
 - Adjust the field of view of your camera's to be smaller in order to have less objects in the view frustum.
@@ -158,7 +161,7 @@ If you are CPU bound by other parts of your application there is likely some oth
 
 ### GPU profiling
 
-In order to know if you are GPU bound you must profile the GPU. Most of the time it makes sense to keep an eye on real-time performance measures and when in doubt capture a GPU trace.
+In order to know if you are GPU bound you must profile the GPU. Most of the time it makes sense to keep an eye on real-time GPU timing queries and when in doubt capture a GPU trace.
 
 The GPU has many processing units working in parallel and it is common to be bound by different units for different parts of the frame. Because of this, it makes sense to look at finding where the GPU cost is going when looking for the GPU bottleneck. Common ways your can be GPU bound are the application being draw call heavy, complex materials, dense triangle meshes and a large view frustum).
 
@@ -180,7 +183,7 @@ If you are **fragment shader** bound you can look at the following optimisation 
 - Reduce the amount of stationary and dynamic lights in your scene. Pre-bake where possible.
 - Try to combine lights that have a similar origin.
 - Limit the attenuation radius and light cone angle to the minimum needed.
-- Use an early partial Z-pass in order to determine what parts of the scene are actually visible. It allows you to avoid expensive shading operations on pixels that do not contribute to the final image.
+- Use an early Z-pass in order to determine what parts of the scene are actually visible. It allows you to avoid expensive shading operations on pixels that do not contribute to the final image.
 - Limit the amount of post-processing steps.
 - Disable shadow casting where possible, either per object or per light.
 - Reduce the shadow map resolution.
@@ -189,7 +192,7 @@ If you are **fragment shader** bound you can look at the following optimisation 
 - Never disable mipmaps if the texture can be seen in a smaller scale to avoid slowdowns due to texture cache misses.
 - Make use of GPU compressed textures and lower bitrate texture formats in order to reduce the in-memory GPU footprint.
 
-Often the shadow map rendering is bound by the vertex shader, except if you have very large areas of shadow casting masked or translucent materials. Possible causes could be dense meshes, a lack of LOD, usage of tessellation or complex world position offsets. Shadow map rendering cost scales with the number of dynamic lights in the scene, number of shadow casting objects in the light frustum and the number of cascades. This is a very common bottleneck and only larger content changes can reduce the cost.
+Often the shadow map rendering is bound by the vertex shader, except if you have very large areas affected by shadows or use translucent materials. Shadow map rendering cost scales with the number of dynamic lights in the scene, number of shadow casting objects in the light frustum and the number of cascades. This is a very common bottleneck.
 
 Highly tessellated meshes, where the wireframe appears as a solid color, can suffer from poor quad utilization. This is because GPUs process triangles in 2x2 pixel blocks and reject pixels outside of the triangle a bit later. This is needed for mip-map computations. For larger triangles, this is not a problem, but if triangles are small or very lengthy the performance can suffer as many pixels are processed but few actually contribute to the image.
 
