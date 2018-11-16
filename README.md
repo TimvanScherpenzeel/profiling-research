@@ -66,9 +66,9 @@ When profiling and optimizing your JavaScript code effort should go out to optim
 
 ## Profiling
 
-I'll primarily focus on profiling using built-in tools of `V8` as most developers are familiar with `Chrome`. Besides the built-in browser developer tools one can start the browser with flags to enable the performance profiling of various parts of the web application. In order to record and visualize these performance profiles you should use `chrome://tracing`, previously `about://tracing`. Please note that any traces recorded with the tool will contains all currently opened resources (tabs, extensions, subresources) with the browser. Make sure that `Chrome` starts without any other resources active in order to be able to get a relatively clean trace.
+Besides the browser's built-in `Chrome developer tools` and tracer available in `chrome://tracing` one can start the browser from the command line with flags to enable the tracing of various parts of the web application.
 
-In order to record a clean trace you should keep the recording to a maximum of 10 seconds, focus on a single activity per recording and leave the computer completely idle for 2 seconds before and after each recording. This will help making the slow process stand out amongst the other recorded data.
+Please note that any traces recorded with the tool will contains all currently opened resources (tabs, extensions, subresources) with the browser. Make sure that `Chrome` starts without any other resources active in order to be able to get a relatively clean trace. In order to record a clean trace you should keep the recording to a maximum of 10 seconds, focus on a single activity per recording and leave the computer completely idle for 2 seconds before and after each recording. This will help making the slow process stand out amongst the other recorded data.
 
 ### Memory profiling and garbage collection
 
