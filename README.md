@@ -180,7 +180,7 @@ If you are vertex shader bound you can look at the following optimisation techni
 - Verify that the vertex count on your models in reasonable.
 - Billboards, imposter meshes or skybox textures can be used to efficiently fake detailed geometry when a mesh is far in the distance.
 
-In `Chrome` there are various ways to profile the GPU.
+In `Chrome` there are various ways to profile the GPU:
 
 One can use the WebGL extension `EXT_disjoint_timer_query` to measure the duration of OpenGL commands submitted to the graphics processor without stalling the rendering pipeline.
 It makes most sense if this extension is integrated into the WebGL engine that you are using. A good example of a WebGL framework with an integrated profiler is [Luma.gl](https://github.com/uber/luma.gl).
