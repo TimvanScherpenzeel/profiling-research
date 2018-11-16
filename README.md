@@ -151,7 +151,7 @@ In order to know if you are GPU bound you must profile the GPU. Most of the time
 
 The GPU has many processing units working in parallel and it is common to be bound by different units for different parts of the frame. Because of this, it makes sense to look at finding where the GPU cost is going when looking for the GPU bottleneck. Common ways your can be GPU bound are the application being draw call heavy, complex materials, dense triangle meshes and a large view frustum).
 
-In order to know if you are pixel bound one can try varying the viewport resolution. If you see a measurable performance change it likely means that you are bound by something pixel related. Usually it is either memory bandwidth (reading and writing), math bound ([ALU](https://en.wikipedia.org/wiki/Arithmetic_logic_unit)), but in rare casese, some specific units are saturated. If you can lower the memory (or math) on the relevant passes and see a performance difference you know it was bound by the memory bandwidth (or the ALU units).
+In order to know if you are pixel bound one can try varying the viewport resolution. If you see a measurable performance change it likely means that you are bound by something pixel related. Usually it is either texture memory bandwidth (reading and writing) bound or math bound ([ALU](https://en.wikipedia.org/wiki/Arithmetic_logic_unit)), but in rare cases, some specific units are saturated (e.g. `MRT`). If you can lower the memory, or math, on the relevant passes and see a performance difference you know it was bound by the memory bandwidth (or the ALU units).
 
 If you are fragment shader bound you can look at the following optimisation techniques:
 - Avoid having to resize textures to be a power of two during runtime.
