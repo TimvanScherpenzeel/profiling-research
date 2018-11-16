@@ -1,5 +1,28 @@
 # Profiling research
 
+* [Introduction](#introduction)
+
+* [Compiler pipeline](#compiler-pipeline)
+    - [Source code](#source-code)
+    - [Parser](#parser)
+    - [AST](#ast)
+    - [Baseline compiler](#baseline-compiler)
+    - [Optimizing compiler](#optimizing-compiler)
+    - [Conclusion](#conclusion)
+
+* [Profiling](#profiling)
+    - [Memory profiling and garbage collection](#memory-profiling-and-garbage-collection)
+        - [Heap snapshot](#heap-snapshot)
+        - [Three snapshot technique](#three-snapshot-technique)
+    - [CPU profiling](#cpu-profiling)
+    - [GPU profiling](#gpu-profiling)
+
+* [Installation](#installation)
+
+* [Resources and references](#resources-and-references)
+
+## Introduction
+
 In order to profile the performance of a web application one would usually use the browsers built-in developer tools. Every once in a while however there comes a time when a developer needs a better understanding of a performance issue in order to solve it. In order to get that understanding the developer needs access to low-level optimisations, de-optimisations and caching techniques in modern browser engines. Due to security restrictions in the browser it is only really possible to get this low-level information from browsers by enabling various flags when launching the browser locally.
 
 `Chromium` and `V8` ship with various built-in tools that help their developers during development of the browser and engine. Luckily we, as web developer, can leverage these same tools to get a better understanding of what is happening under the hood.
