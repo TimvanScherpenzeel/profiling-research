@@ -145,13 +145,14 @@ More advanced captures over period of time can be done using the performance cap
 If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problems and the solution is often to combine draw calls to reduce the cost. This quite often means combining several meshes into a single mesh. The actual cost of the CPU is in many areas. The renderer needs to process each object (culling, material, lighting, collision, update). The more complex your materials the higher the cost at creation time. The renderer needs to prepare GPU commands to set up state for each draw call and do the actual API call. In WebGL there is a small but significant overhead due to strict validation of the shader code. The underlying graphics driver validates the commands further and creates a command buffer for the hardware.
 
 In order to reduce the mesh draw calls one can use the following techniques:
-- Reduce the object count (e.g. static meshes, dynamic meshes and mesh particles)
-- Reduce the view distance
+- Reduce the object count (e.g. static meshes, dynamic meshes and mesh particles).
+- Reduce the far view distance on your camera's.
 - Adjust the field of view of your camera's to be smaller in order to have less objects in the view frustum.
-- Reduce the amount of elements per draw call (e.g. combine textures into texture maps, use LOD models)
+- Reduce the amount of elements per draw call (e.g. combine textures into texture atlases, use LOD models).
 - Disable features on a mesh like custom depth, shadow casting and shadow receiving.
-- Change light sources to not shadow cast or have a tighter bounding volume (view cone, attenuation radius)
-- Use hardware instancing where possible as it reduces the driver overhead per draw call (e.g. mesh particles)
+- Change light sources to not shadow cast or have a tighter bounding volume (view cone, attenuation radius).
+- Use hardware instancing where possible as it reduces the driver overhead per draw call (e.g. mesh particles).
+- Reduce the depth of your scene graph. Compute the visible scene nodes only when the scene graph changes.
 
 If you are CPU bound by other parts of your application there is likely some other issue in your codebase.
 
@@ -167,6 +168,8 @@ In general you should look at using the following optimisation techniques:
 - Do as much as you can in the vertex shader rathe than in the fragment shader because, per rendering pass, fragment shaders run many more times than vertex shaders, any calculation that can be done on the vertices and then just interpolated among fragments is a performance benefit (this interpolation is done "automagically" for you, through the fixed functionality rasterization phase of the WebGL pipeline).
 - Reduce the amount of WebGL state changes by caching and mirroring the state on the JavaScript. By diffing the state in JavaScript you can drastically reduce the amount of expensive WebGL state changes.
 - Avoid anything that requires synching the CPU and GPU as it is potentially very slow. Cache WebGL getter calls such as `getParameter` and `getUniformLocation` in JavaScript variables and only programtically use `setParameter` after making sure you actually need to set the parameter by checking the mirrored WebGL state in JavaScript.
+- Cull any geometry that won't be visible.
+- Group mesh submissions with the same state in order to prevent unnecessary WebGL state switches.
 
 If you are fragment shader bound you can look at the following optimisation techniques:
 - Avoid having to resize textures to be a power of two during runtime.
