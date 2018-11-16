@@ -170,6 +170,9 @@ In general you should look at using the following optimisation techniques:
 - Avoid anything that requires synching the CPU and GPU as it is potentially very slow. Cache WebGL getter calls such as `getParameter` and `getUniformLocation` in JavaScript variables and only programtically use `setParameter` after making sure you actually need to set the parameter by checking the mirrored WebGL state in JavaScript.
 - Cull any geometry that won't be visible.
 - Group mesh submissions with the same state in order to prevent unnecessary WebGL state switches.
+- Limit the size of the canvas and do not directly use the device's pixel ratio but rather artifically limit it to a point where visual fidelity is acceptable yet performant.
+- Turn off the canvas's native anti-aliasing option, instead anti-alias once during postprocessing using FXAA, SMAA or similar in the fragment shader.
+- Disable alpha blending and disable the preserving of the drawing buffer when creating the WebGL canvas.
 
 If you are fragment shader bound you can look at the following optimisation techniques:
 - Avoid having to resize textures to be a power of two during runtime.
