@@ -2,11 +2,11 @@
 
 In order to profile the performance of a web application one would usually use the browsers built-in developer tools. Every once in a while however there comes a time when a developer needs a better understanding of a performance issue in order to solve it. In order to get that understanding the developer needs access to low-level optimisations, de-optimisations and caching techniques in modern browser engines. Due to security restrictions in the browser it is only really possible to get this low-level information from browsers by enabling various flags when launching the browser locally.
 
-Chromium and V8 ship with various built-in tools that help their developers during development of the browser and engine. Luckily we, as web developer, can leverage these same tools to get a better understanding of what is happening under the hood.
+`Chromium` and `V8` ship with various built-in tools that help their developers during development of the browser and engine. Luckily we, as web developer, can leverage these same tools to get a better understanding of what is happening under the hood.
 
 To understand what parts of the application are useful to profile one must have a general understanding of the architecture of the compiler pipeline in modern browser engines like `V8`. The compiler pipelines behind each browser are similar but not at all the same on a technical level. By looking at the `V8` pipeline in general terms we can understand what are the core parts of each engine without getting lost in the implementation details.
 
-It is not necessary to understand the intrinsics of each browser engine but it is benificial as a starting point in understanding what is harming the performance of your application.
+It is not necessary to understand the intrinsics of each browser engine but it is beneficial as a starting point in understanding what is harming the performance of your application.
 
 ## Compiler pipeline
 
@@ -25,7 +25,7 @@ The parser generally consists out of a `pre-parser` and a `full-parser`. The `pr
 ### AST
 
 The `Abstract Syntax Tree` or in short `AST` is created from the parsed source code.
-`AST's` are data structures widely used in compilers, due to their property of representing the structure of program code. An `AST` is usually the result of the syntax analysis phase of a compiler, a tree representation of the abstract syntactic structure of source code. Each node of the tree denotes a construct occurring in the source code. It is benificial to get a good understanding of what `AST's` are as they are very oftenly used in pre-processors, code generators, minifiers, transpilers, linters and codemods.
+`AST's` are data structures widely used in compilers, due to their property of representing the structure of program code. An `AST` is usually the result of the syntax analysis phase of a compiler, a tree representation of the abstract syntactic structure of source code. Each node of the tree denotes a construct occurring in the source code. It is beneficial to get a good understanding of what `AST's` are as they are very oftenly used in pre-processors, code generators, minifiers, transpilers, linters and codemods.
 
 ### Baseline compiler
 
@@ -51,7 +51,7 @@ The essential point of garbage collection is the ability to manage memory usage 
 
 All variables in a program are part of the object graph and object variables can reference other variables. Allocating variables is done from the `young memory pool` and is very cheap until the memory pool runs out of memory. Whenever that happens a garbage collection is forced which causes higher latency, dropped frames and thus a major impact on the user experience.
 
-Objects have two sizes: `shallow (self)` and `retained (self + descendents)`. All variables that cannot be reached from the root node are considered as garbage. The job of the garbage collector is to `mark-and-sweep` or in other words: go through objects that are allocated in memory and determine wheter they are `dead` or `alive`. If an object is unreachable it is removed from memory and previously allocated memory gets released back to the heap. Generally, e.g. in `V8`, the object heap is segmented into two parts: the `young generation` and the `old generation`. The `young generation` consists of `new space` in which new objects are allocated. It allocates fast, frequently collects and collects fast. The `old space` stores objects that are survived enough garbage collector cycles to be promoted to the `old generation`. It allocates fast, infrequently collects and does slower collection.
+Objects have two sizes: `shallow (self)` and `retained (self + descendents)`. All variables that cannot be reached from the root node are considered as garbage. The job of the garbage collector is to `mark-and-sweep` or in other words: go through objects that are allocated in memory and determine whether they are `dead` or `alive`. If an object is unreachable it is removed from memory and previously allocated memory gets released back to the heap. Generally, e.g. in `V8`, the object heap is segmented into two parts: the `young generation` and the `old generation`. The `young generation` consists of `new space` in which new objects are allocated. It allocates fast, frequently collects and collects fast. The `old space` stores objects that are survived enough garbage collector cycles to be promoted to the `old generation`. It allocates fast, infrequently collects and does slower collection.
 
 The cost of the garbage collection is proportional to the number of live objects. This is due to a copying mechanism that copies over objects that are still alive into a new space. Most of the time newly allocated objects do not survive long enough in order to become old. It is important to understand that each allocation moves you closer to a garbage collection and every collection pauses the execution of your application. It is therefore important in performance critical applications to strive for a static amount of alive objects and prevent allocating new ones whilst running.
 
@@ -72,11 +72,11 @@ In the `Chrome developer tools` panel, in the memory tab, you can find the optio
 
 Once you have taken your snapshot you can start inspecting it.
 
-You should ignore everything in parentheses and everything that is dimmed in the `heap snapshot`. These are various constructors that you do not have explicit control over in your application. The snapshot is ordered by the `constructor` name and you can filter the heap to find your constructor using the `class filter` up top. If you record multiple snapshots it is benificial to compare them to each other. You can do this by opening the dropdown menu left of the `class filter` and set it to `comparison`. You can now see the difference between two snapshots. The list will be much shorter and you can see more easily what has changed in memory.
+You should ignore everything in parentheses and everything that is dimmed in the `heap snapshot`. These are various constructors that you do not have explicit control over in your application. The snapshot is ordered by the `constructor` name and you can filter the heap to find your constructor using the `class filter` up top. If you record multiple snapshots it is beneficial to compare them to each other. You can do this by opening the dropdown menu left of the `class filter` and set it to `comparison`. You can now see the difference between two snapshots. The list will be much shorter and you can see more easily what has changed in memory.
 
 Objects in the `heap snapshot` with a yellow background are an indicator that there is no active handle available meaning that these objects will be difficult to clean up as you have probably lost its reference to it. Most likely it is still in the DOM tree but you lost your JavaScript reference to it.
 
-Objects with a red background in the `heap snapshot` are considered objects that have been detatched from the DOM tree but their JavaScript reference is being retained. A DOM node can only be garbage collected when there are no references to it from either the page's DOM tree or JavaScript code. A node is said to be "detached" when it's removed from the DOM tree but some JavaScript still references it. Detached DOM nodes are a common cause of memory leaks. They are only alive because they are part of the yellow node's tree.
+Objects with a red background in the `heap snapshot` are considered objects that have been detached from the DOM tree but their JavaScript reference is being retained. A DOM node can only be garbage collected when there are no references to it from either the page's DOM tree or JavaScript code. A node is said to be "detached" when it's removed from the DOM tree but some JavaScript still references it. Detached DOM nodes are a common cause of memory leaks. They are only alive because they are part of the yellow node's tree.
 
 In general, you want to focus on the yellow nodes in the `heap snapshot`. Fix your code so that the yellow node isn't alive for longer than it needs to be, and you also get rid of the red nodes that are part of the yellow node's tree.
 
@@ -97,7 +97,7 @@ _Image source: Google Developers Live - https://www.youtube.com/watch?v=L3ugr9BJ
 
 ### CPU profiling
 
-In order to know if you are CPU bound you must profile the CPU. Most of the time it makes sense to keep an eye on realtime performance measures and when in doubt capture a CPU trace.
+In order to know if you are CPU bound you must profile the CPU. Most of the time it makes sense to keep an eye on real-time performance measures and when in doubt capture a CPU trace.
 
 In `Chrome` there is a useful live CPU usage and runtime performance visualizer in the `performance monitor` tab.
 
@@ -107,14 +107,14 @@ More advanced captures over period of time can be done using the performance cap
 
 ![Performance tracer](/docs/CPU_TRACE_PROFILER.png?raw=true)
 
-If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problems and the solution is often to combine draw calls to reduce the cost. This quite often means combining several meshes into a single mesh. The actual cost of the CPU is in many areas. The renderer needs to process each object (culling, material, lighting, collision, update). The more complex your materials the higher the cost at creation time. The renderer needs to prepare GPU commands to set up state for each draw call and do the actual API call. In WebGL there is a small but significant overhead due to strict validation of the shader code. The underlying graphics driver validates the commands futher and creates a command buffer for the hardware.
+If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problems and the solution is often to combine draw calls to reduce the cost. This quite often means combining several meshes into a single mesh. The actual cost of the CPU is in many areas. The renderer needs to process each object (culling, material, lighting, collision, update). The more complex your materials the higher the cost at creation time. The renderer needs to prepare GPU commands to set up state for each draw call and do the actual API call. In WebGL there is a small but significant overhead due to strict validation of the shader code. The underlying graphics driver validates the commands further and creates a command buffer for the hardware.
 
 In order to reduce the mesh draw calls one can use the following techniques:
 - Reduce the object count (e.g. static meshes, dynamic meshes and mesh particles)
 - Reduce the view distance
 - Adjusting the field of view
 - Reducing the amount of elements per draw call (e.g. combine textures into texture maps, use LOD models)
-- Disable features on a mesh like custom depth, shadow casting and shadow recieving.
+- Disable features on a mesh like custom depth, shadow casting and shadow receiving.
 - Changing light sources to not shadow cast or have a tighter bounding volume (view cone, attenuation radius)
 - Use hardware instancing where possible as it reduces the driver overhead per draw call (e.g. mesh particles)
 
@@ -122,11 +122,11 @@ If you are CPU bound by other parts of your application there is likely some oth
 
 ### GPU profiling
 
-In order to know if you are GPU bound you must profile the GPU. Most of the time it makes sense to keep an eye on realtime performance measures and when in doubt capture a GPU trace.
+In order to know if you are GPU bound you must profile the GPU. Most of the time it makes sense to keep an eye on real-time performance measures and when in doubt capture a GPU trace.
 
 The GPU has many processing units working in parallel and it is common to be bound by different units for different parts of the frame. Because of this, it makes sense to look at finding where the GPU cost is going when looking for the GPU bottleneck. Common ways your can be GPU bound are the application being draw call heavy, complex materials, dense triangle meshes and a large view frustum).
 
-In order to know if you are pixel bound one can try varying the viewport resolution. If you see a measureable performance change it likely means that you are bound by something pixel related. Usually it is either memory bandwidth (reading and writing), math bound ([ALU](https://en.wikipedia.org/wiki/Arithmetic_logic_unit)), but in rare casese, some specific units are saturated. If you can lower the memory (or math) on the relevant passes and see a performance difference you know it was bound by the memory bandwidth (or the ALU units).
+In order to know if you are pixel bound one can try varying the viewport resolution. If you see a measurable performance change it likely means that you are bound by something pixel related. Usually it is either memory bandwidth (reading and writing), math bound ([ALU](https://en.wikipedia.org/wiki/Arithmetic_logic_unit)), but in rare casese, some specific units are saturated. If you can lower the memory (or math) on the relevant passes and see a performance difference you know it was bound by the memory bandwidth (or the ALU units).
 
 If you are fragment shader bound you can look at the following optimisation techniques:
 - Reduce the amount of stationary and dynamic lights in your scene. Pre-bake where possible.
@@ -141,15 +141,15 @@ If you are fragment shader bound you can look at the following optimisation tech
 - Never disable mipmaps if the texture can be seen in a smaller scale, to avoid slowdowns due to texture cache misses.
 - Make use of GPU compressed textures where possible as smaller texture formats result in faster materials.
 
-Often the shadow map rendering is bound by vertex shader, except if you have very large areas of shadow casting masked or translucent materials. Possible causes could be dense meshes, no LOD, usage of tesselation or relying too much world position offsets. Shadow map rendering cost scales with the number of dynamic lights in the scene, number of shadow casting objects in the light frustum and the number of cascades. This is a very common bottleneck and only larger content changes can reduce the cost.
+Often the shadow map rendering is bound by vertex shader, except if you have very large areas of shadow casting masked or translucent materials. Possible causes could be dense meshes, no LOD, usage of tessellation or relying too much world position offsets. Shadow map rendering cost scales with the number of dynamic lights in the scene, number of shadow casting objects in the light frustum and the number of cascades. This is a very common bottleneck and only larger content changes can reduce the cost.
 
-Highly tessallated meshes, where the wireframe appears as a solid color, can suffer from poor quad utilization. This is because GPUs process triangles in 2x2 pixel blocks and reject pixels outside of the triangle a bit later. This is needed for mip map computations. For larger triangles, this is not a problem, but if triangles are small or very lengthy the performance can suffer as many pixels are processed but few actually contribute to the image.
+Highly tessellated meshes, where the wireframe appears as a solid color, can suffer from poor quad utilization. This is because GPUs process triangles in 2x2 pixel blocks and reject pixels outside of the triangle a bit later. This is needed for mip-map computations. For larger triangles, this is not a problem, but if triangles are small or very lengthy the performance can suffer as many pixels are processed but few actually contribute to the image.
 
 If you are vertex shader bound you can look at the following optimisation techniques:
 - Avoid using too many vertices (use LOD meshes).
-- Verify your LOD is setup with aggresive transition ranges. A LOD should use vertex count by at least 2x. To optimize this, check the wireframe, solid colors indicate a problem.
+- Verify your LOD is setup with aggressive transition ranges. A LOD should use vertex count by at least 2x. To optimize this, check the wireframe, solid colors indicate a problem.
 - Avoid using complex world position offsets (morph targets, vertex displacement using textures with poor mip-mapping)
-- Avoid tesselation if possible (if necessary be sure to limit to tessalation factor to a reasonable amount). Pretesselated meshes are usually faster.
+- Avoid tessellation if possible (if necessary be sure to limit the tessellation factor to a reasonable amount). Pretesselated meshes are usually faster.
 - Very large meshes can be split up for better view culling.
 - Avoid using too many vertex attributes.
 - Verify that the vertex count on your models in reasonable.
@@ -177,7 +177,7 @@ For capturing GPU traces I recommend using the `rendering` preset.
 
 ## Installation
 
-To automatically download and setup Chromy Canary on MacOS using Homebrew you can use:
+To automatically download and setup Chrome Canary on MacOS using Homebrew you can use:
 
 ```sh
 $ ./scripts/setup_macos.sh
