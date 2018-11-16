@@ -8,6 +8,7 @@ LOG_DIRECTORY="${2:-logs}"
 LOG_OUTPUT="${3:-logs/chrome_canary_output.log}"
 LOG_ERROR="${4:-logs/chrome_canary_error.log}"
 BASE_TEMP_PROFILE_DIR="${5:-/tmp}"
+REMOTE_DEBUGGING_PORT="${6:-9222}"
 
 # Temporary profile
 TEMP_PROFILE_DIR=$(mktemp -d $BASE_TEMP_PROFILE_DIR/google-chome.XXXXXXX)
@@ -36,7 +37,10 @@ run() {
     # Opening chrome://tracing is not allowed from the command line
     echo -e "Please open \"chrome://tracing\" to start V8 tracing in a new browser tab\n"
 
-    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --disable-gpu-vsync --disable-frame-rate-limit --ignore-gpu-blacklist --user-data-dir=$TEMP_PROFILE_DIR --no-first-run --js-flags="--trace-file-names --trace-opt --trace-deopt --print-opt-source --code-comments" 1> $LOG_OUTPUT 2> $LOG_ERROR
+    # Disable vSync: --disable-gpu-vsync
+    # Disable frame limiting: --disable-frame-rate-limit
+
+    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --no-default-browser-check --remote-debugging-port=$REMOTE_DEBUGGING_PORT --ignore-gpu-blacklist --user-data-dir=$TEMP_PROFILE_DIR --no-first-run --js-flags="--trace-file-names --trace-opt --trace-deopt --print-opt-source --code-comments" 1> $LOG_OUTPUT 2> $LOG_ERROR
 
     echo -e "Cleaning up temporary profile folder in $TEMP_PROFILE_DIR"
 
