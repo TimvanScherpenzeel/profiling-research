@@ -70,7 +70,7 @@ When profiling and optimizing your JavaScript code effort should go out to optim
 
 ## Profiling
 
-Besides the browser's built-in `Chrome developer tools` and tracer available in `chrome://tracing` one can start the browser from the command line with flags to enable the tracing of various parts of the web application.
+Besides the browser's built-in sampling profiler `Chrome developer tools` and the structural profiler available in `chrome://tracing` one can start the browser from the command line with flags to enable the tracing of various parts of the web application.
 
 Please note that any traces recorded with the tool will contains all currently opened resources (tabs, extensions, subresources) with the browser. Make sure that `Chrome` starts without any other resources active in order to be able to get a relatively clean trace. In order to record a clean trace you should keep the recording to a maximum of 10 seconds, focus on a single activity per recording and leave the computer completely idle for 2 seconds before and after each recording. This will help making the slow process stand out amongst the other recorded data.
 
@@ -235,6 +235,7 @@ $ ./scripts/run_macos.sh <URL>
 
 ## Resources and references
 
+- [Optimizing WebGL Applications with Don Olmstead](https://www.youtube.com/watch?v=QVvHtWePQdA)
 - [CPU profiling in Unreal Engine](https://docs.unrealengine.com/en-us/Engine/Performance/CPU)
 - [GPU profiling in Unreal Engine](https://docs.unrealengine.com/en-us/Engine/Performance/GPU)
 - [Performance Guidelines for Artists and Designers](https://docs.unrealengine.com/en-us/Engine/Performance/Guidelines)
