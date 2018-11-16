@@ -120,12 +120,6 @@ In order to reduce the mesh draw calls one can use the following techniques:
 
 If you are CPU bound by other parts of your application there is likely some other issue in your codebase.
 
-In order to know if you are CPU bound or GPU bound you should profile both.
-
-Show how to profile the CPU and how to interpret the visualized results.
-
-https://chromium.googlesource.com/chromium/src/+/master/docs/profiling.md
-
 ### GPU profiling
 
 In order to know if you are GPU bound you must profile the GPU. Most of the time it makes sense to keep an eye on realtime performance measures and when in doubt capture a GPU trace.
@@ -163,25 +157,21 @@ If you are vertex shader bound you can look at the following optimisation techni
 
 In Chrome there are various ways to profile the GPU.
 
-Show how to profile the GPU and how to interpret the visualized results.
-
-https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/probe-gpu.md
-
-https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/ToolsOverview/ToolsOverview.html
-
-https://www.html5rocks.com/en/tutorials/games/abouttracing/
-
-## Debugging
-
-### GPU debugging
-
-There are several ways one can debug the WebGL context and the native OpenGL instructions.
+One can use the WebGL extension `EXT_disjoint_timer_query` to measure the duration of OpenGL commands submitted to the graphics processor without stalling the rendering pipeline.
+It makes most sense if this extension is integrated into the WebGL engine that you are using. A good example of a WebGL framework with an integrated profiler is [Luma.gl](https://github.com/uber/luma.gl).
 
 One can use an external debugger like [RenderDoc (Windows, Linux)](https://renderdoc.org/docs/index.html) or [APITrace (Windows, Linux, Mac (limited support))](https://github.com/apitrace/apitrace). Instructions on how to use debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
 
 For tracing an individual frame without setting up an external debugger I highly recommend using the Chrome extension [Spector.js](https://spector.babylonjs.com/). This does not require the disabling of the GPU sandbox, like some external debuggers do. I would highly recommend this method over using an external debugger if you use Mac OS.
 
 Finally one can also wrap the `WebGLRenderingContext` with a debugging wrapper like the [one provided by the Khronos Group](https://www.npmjs.com/package/webgl-debug) to catch invalid WebGL operations and give the errors a bit more context. This comes with a large overhead as every single instruction is traced (and optionally logged to the console so make sure to only optionally include the dependency in development.
+
+For capturing traces over time one can use the advanced tracing capabilities like [MemoryInfra](https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/README.md) available in `chrome://tracing`.
+A good example for how to understand and work with the captures of it can be found [here](https://www.html5rocks.com/en/tutorials/games/abouttracing/). I recommend using the `rendering` preset.
+
+![Chrome tracing rendering toggle](/docs/CHROME_TRACING_RENDERING_TOGGLE.png?raw=true)
+
+![Chrome tracing rendering trace](/docs/CHROME_TRACING_RENDERING_TRACE.png?raw=true)
 
 ## Installation
 
