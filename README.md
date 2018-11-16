@@ -95,9 +95,9 @@ In order to limit the amount of objects that have to be garbage collected a deve
 
 #### Heap snapshot
 
-![Heap snapshot button](/docs/HEAP_SNAPSHOT_BUTTON.jpg?raw=true)
+![Heap snapshot button](/docs/HEAP_SNAPSHOT_BUTTON.png?raw=true)
 
-![Heap snapshot trace](/docs/HEAP_SNAPSHOT_TRACE.png?raw=true)
+![Heap snapshot trace](/docs/HEAP_SNAPSHOT_TRACE_DETACHED.png?raw=true)
 
 In the `Chrome developer tools` panel, in the memory tab, you can find the option to take a `heap snapshot` which shows the memory distribution among your applications JavaScript objects and related DOM nodes. It is important to note that right **before** you click the heap snapshot button a major garbage collection is done. Because of this you can assume that everything that `V8` assumes to be able to garbage collected has already been cleaned up allowing you to get an idea of what `V8` was unable to clean up at the time.
 
