@@ -215,7 +215,7 @@ In order to install `V8` and the `D8` shell I recommend following the excellent 
 ## Usage
 
 ```sh
-$ ./scripts/run.sh <URL>
+$ ./scripts/run_macos.sh <URL>
 ```
 
 ## Resources and references
