@@ -41,7 +41,7 @@ When profiling and optimizing your JavaScript code effort should go out to optim
 
 ## Profiling
 
-I'll primarily focus on profiling using built-in tools of `V8` as most developers are familiar with Chrome. Besides the built-in browser developer tools one can start the browser with flags to enable the performance profiling of various parts of the web application. In order to record and visualize these performance profiles you should use `chrome://tracing`, previously `about://tracing`. Please note that any traces recorded with the tool will contains all currently opened resources (tabs, extensions, subresources) with the browser. Make sure that Chrome starts without any other resources active in order to be able to get a relatively clean trace.
+I'll primarily focus on profiling using built-in tools of `V8` as most developers are familiar with `Chrome`. Besides the built-in browser developer tools one can start the browser with flags to enable the performance profiling of various parts of the web application. In order to record and visualize these performance profiles you should use `chrome://tracing`, previously `about://tracing`. Please note that any traces recorded with the tool will contains all currently opened resources (tabs, extensions, subresources) with the browser. Make sure that `Chrome` starts without any other resources active in order to be able to get a relatively clean trace.
 
 In order to record a clean trace you should keep the recording to a maximum of 10 seconds, focus on a single activity per recording and leave the computer completely idle for 2 seconds before and after each recording. This will help making the slow process stand out amongst the other recorded data.
 
@@ -80,7 +80,7 @@ Objects with a red background in the `heap snapshot` are considered objects that
 
 In general, you want to focus on the yellow nodes in the `heap snapshot`. Fix your code so that the yellow node isn't alive for longer than it needs to be, and you also get rid of the red nodes that are part of the yellow node's tree.
 
-For more information there are excellent entries on the Chrome developer tools blog on memory profiling:
+For more information there are excellent entries on the `Chrome developer tools` blog on memory profiling:
 
 - [Fix memory problems](https://developers.google.com/web/tools/chrome-devtools/memory-problems/)
 - [Understand memory terminology](https://developers.google.com/web/tools/chrome-devtools/memory-problems/memory-101)
@@ -155,19 +155,21 @@ If you are vertex shader bound you can look at the following optimisation techni
 - Verify that the vertex count on your models in reasonable.
 - Billboards, imposter meshes or skybox textures can be used to efficiently fake detailed geometry when a mesh is far in the distance.
 
-In Chrome there are various ways to profile the GPU.
+In `Chrome` there are various ways to profile the GPU.
 
 One can use the WebGL extension `EXT_disjoint_timer_query` to measure the duration of OpenGL commands submitted to the graphics processor without stalling the rendering pipeline.
 It makes most sense if this extension is integrated into the WebGL engine that you are using. A good example of a WebGL framework with an integrated profiler is [Luma.gl](https://github.com/uber/luma.gl).
 
 One can use an external debugger like [RenderDoc (Windows, Linux)](https://renderdoc.org/docs/index.html) or [APITrace (Windows, Linux, Mac (limited support))](https://github.com/apitrace/apitrace). Instructions on how to use debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
 
-For tracing an individual frame without setting up an external debugger I highly recommend using the Chrome extension [Spector.js](https://spector.babylonjs.com/). This does not require the disabling of the GPU sandbox, like some external debuggers do. I would highly recommend this method over using an external debugger if you use Mac OS.
+For tracing an individual frame without setting up an external debugger I highly recommend using the `Chrome` extension [Spector.js](https://spector.babylonjs.com/). This does not require the disabling of the GPU sandbox, like some external debuggers do. I would highly recommend this method over using an external debugger if you use Mac OS.
 
 Finally one can also wrap the `WebGLRenderingContext` with a debugging wrapper like the [one provided by the Khronos Group](https://www.npmjs.com/package/webgl-debug) to catch invalid WebGL operations and give the errors a bit more context. This comes with a large overhead as every single instruction is traced (and optionally logged to the console so make sure to only optionally include the dependency in development.
 
 For capturing traces over time one can use the advanced tracing capabilities like [MemoryInfra](https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/README.md) available in `chrome://tracing`.
-A good example for how to understand and work with the captures of it can be found [here](https://www.html5rocks.com/en/tutorials/games/abouttracing/). I recommend using the `rendering` preset.
+A good example for how to understand and work with the captures of it can be found [here](https://www.html5rocks.com/en/tutorials/games/abouttracing/). 
+
+For capturing GPU traces I recommend using the `rendering` preset.
 
 ![Chrome tracing rendering toggle](/docs/CHROME_TRACING_RENDERING_TOGGLE.png?raw=true)
 
