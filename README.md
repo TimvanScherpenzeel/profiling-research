@@ -95,19 +95,19 @@ In order to limit the amount of objects that have to be garbage collected a deve
 
 #### Heap snapshot
 
+In the `Chrome developer tools` panel, in the memory tab, you can find the option to take a `heap snapshot` which shows the memory distribution among your applications JavaScript objects and related DOM nodes. It is important to note that right **before** you click the heap snapshot button a major garbage collection is done. Because of this you can assume that everything that `V8` assumes to be able to garbage collected has already been cleaned up allowing you to get an idea of what `V8` was unable to clean up at the time.
+
 ![Heap snapshot button](/docs/HEAP_SNAPSHOT_BUTTON.png?raw=true)
 
 _Image source: Google Developers - https://developers.google.com/web/tools/chrome-devtools/memory-problems/_
 
-![Heap snapshot trace](/docs/HEAP_SNAPSHOT_TRACE_DETACHED.png?raw=true)
-
-_Image source: Google Developers - https://developers.google.com/web/tools/chrome-devtools/memory-problems/_
-
-In the `Chrome developer tools` panel, in the memory tab, you can find the option to take a `heap snapshot` which shows the memory distribution among your applications JavaScript objects and related DOM nodes. It is important to note that right **before** you click the heap snapshot button a major garbage collection is done. Because of this you can assume that everything that `V8` assumes to be able to garbage collected has already been cleaned up allowing you to get an idea of what `V8` was unable to clean up at the time.
-
 Once you have taken your snapshot you can start inspecting it.
 
 You should ignore everything in parentheses and everything that is dimmed in the `heap snapshot`. These are various constructors that you do not have explicit control over in your application. The snapshot is ordered by the `constructor` name and you can filter the heap to find your constructor using the `class filter` up top. If you record multiple snapshots it is beneficial to compare them to each other. You can do this by opening the dropdown menu left of the `class filter` and set it to `comparison`. You can now see the difference between two snapshots. The list will be much shorter and you can see more easily what has changed in memory.
+
+![Heap snapshot trace](/docs/HEAP_SNAPSHOT_TRACE_DETACHED.png?raw=true)
+
+_Image source: Google Developers - https://developers.google.com/web/tools/chrome-devtools/memory-problems/_
 
 Objects in the `heap snapshot` with a yellow background are an indicator that there is no active handle available meaning that these objects will be difficult to clean up as you have probably lost its reference to it. Most likely it is still in the DOM tree but you lost your JavaScript reference to it.
 
