@@ -115,7 +115,7 @@ https://www.html5rocks.com/en/tutorials/games/abouttracing/
 
 ### GPU debugging
 
-There are several ways one can debug WebGL and the native OpenGL instructions using an external debugger like [RenderDoc](https://renderdoc.org/docs/index.html) or [APITrace](https://github.com/apitrace/apitrace). Instructions on how to use debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
+There are several ways one can debug WebGL and the native OpenGL instructions using an external debugger like [RenderDoc (Windows, Linux)](https://renderdoc.org/docs/index.html) or [APITrace (Windows, Linux, Mac (limited support))](https://github.com/apitrace/apitrace). Instructions on how to use debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
 
 For tracing an individual frame without setting up an external debugger I highly recommend using the Chrome extension [Spector.js](https://spector.babylonjs.com/).
 
