@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to start the Chrome Canary V8 profiler
+# Script to start the Chrome Canary with V8 profiler flags
 
 # Configuration
 LOCATION="${1:-http://localhost:8080}"
@@ -24,7 +24,7 @@ function log () {
 }
 
 run() {
-    log "Starting the Chrome Canary V8 profiler"
+    log "Starting the Chrome Canary with V8 profiler flags"
 
     mkdir -p $LOG_DIRECTORY
     touch $LOG_OUTPUT
@@ -35,7 +35,7 @@ run() {
     echo -e "Created temporary profile folder in $TEMP_PROFILE_DIR"
 
     # Opening chrome://tracing is not allowed from the command line
-    echo -e "Please open \"chrome://tracing\" to start V8 tracing in a new browser tab\n"
+    echo -e "Please open \"chrome://tracing\" in a new browser tab to start structural profiling\n"
 
     # Chrome flags
 
