@@ -101,7 +101,9 @@ In order to know if you are CPU bound you must profile the CPU. Most of the time
 
 ![Performance monitor](/docs/CPU_LIVE_USAGE_PROFILER.png?raw=true)
 
-More advanced tracing over time can be done using `chrome://tracing`.
+More advanced captures over period of time can be done using the performance capture feature in the `performance` tab in `Chrome`.
+
+![Performance tracer](/docs/CPU_TRACE_PROFILER.png?raw=true)
 
 If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problems and the solution is often to combine draw calls to reduce the cost. This quite often means combining several meshes into a single mesh. The actual cost of the CPU is in many areas. The renderer needs to process each object (culling, material, lighting, collision, update). The more complex your materials the higher the cost at creation time. The renderer needs to prepare GPU commands to set up state for each draw call and do the actual API call. In WebGL there is a small but significant overhead due to strict validation of the shader code. The underlying graphics driver validates the commands futher and creates a command buffer for the hardware.
 

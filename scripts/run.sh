@@ -37,10 +37,7 @@ run() {
     # Opening chrome://tracing is not allowed from the command line
     echo -e "Please open \"chrome://tracing\" to start V8 tracing in a new browser tab\n"
 
-    # Disable vSync: --disable-gpu-vsync
-    # Disable frame limiting: --disable-frame-rate-limit
-
-    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --no-default-browser-check --remote-debugging-port=$REMOTE_DEBUGGING_PORT --ignore-gpu-blacklist --user-data-dir=$TEMP_PROFILE_DIR --no-first-run --js-flags="--trace-file-names --trace-opt --trace-deopt --print-opt-source --code-comments" 1> $LOG_OUTPUT 2> $LOG_ERROR
+    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --disable-gpu-vsync --disable-frame-rate-limit --no-default-browser-check --remote-debugging-port=$REMOTE_DEBUGGING_PORT --ignore-gpu-blacklist --user-data-dir=$TEMP_PROFILE_DIR --no-first-run --js-flags="--trace-file-names --trace-opt --trace-deopt --print-opt-source --code-comments" 1> $LOG_OUTPUT 2> $LOG_ERROR
 
     echo -e "Cleaning up temporary profile folder in $TEMP_PROFILE_DIR"
 
