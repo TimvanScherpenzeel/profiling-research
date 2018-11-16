@@ -19,6 +19,8 @@
 
 * [Installation](#installation)
 
+* [Usage](#usage)
+
 * [Resources and references](#resources-and-references)
 
 ## Introduction
