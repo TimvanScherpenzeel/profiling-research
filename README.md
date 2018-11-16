@@ -2,6 +2,8 @@
 
 Research on advanced profiling of high-performance web applications.
 
+## Table of contents
+
 * [Introduction](#introduction)
 
 * [Compiler pipeline](#compiler-pipeline)
