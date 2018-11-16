@@ -97,11 +97,13 @@ _Image source: Google Developers Live - https://www.youtube.com/watch?v=L3ugr9BJ
 
 ### CPU profiling
 
-In order to know if you are CPU bound you must profile the CPU. Most of the time it makes sense to keep an eye on realtime performance measures and when in doubt capture a CPU trace. In `Chrome` there is a useful live CPU usage visualizer in the `performance monitor` tab.
+In order to know if you are CPU bound you must profile the CPU. Most of the time it makes sense to keep an eye on realtime performance measures and when in doubt capture a CPU trace.
+
+In `Chrome` there is a useful live CPU usage and runtime performance visualizer in the `performance monitor` tab.
 
 ![Performance monitor](/docs/CPU_LIVE_USAGE_PROFILER.png?raw=true)
 
-More advanced captures over period of time can be done using the performance capture feature in the `performance` tab in `Chrome`.
+More advanced captures over period of time can be done using the performance capture feature in the `performance` tab in `Chrome`. A good tutorial for understanding the runtime performance trace can be found [here](https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/).
 
 ![Performance tracer](/docs/CPU_TRACE_PROFILER.png?raw=true)
 
