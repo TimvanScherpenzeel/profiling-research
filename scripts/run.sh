@@ -37,7 +37,23 @@ run() {
     # Opening chrome://tracing is not allowed from the command line
     echo -e "Please open \"chrome://tracing\" to start V8 tracing in a new browser tab\n"
 
-    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --disable-gpu-vsync --disable-frame-rate-limit --no-default-browser-check --remote-debugging-port=$REMOTE_DEBUGGING_PORT --ignore-gpu-blacklist --user-data-dir=$TEMP_PROFILE_DIR --no-first-run --js-flags="--trace-file-names --trace-opt --trace-deopt --print-opt-source --code-comments" 1> $LOG_OUTPUT 2> $LOG_ERROR
+    # Chrome flags
+
+    # --incognito | Launches Chrome in incognito mode
+    # --disable-gpu-vsync + --disable-frame-rate-limit | Disables the VSync and de-limits the 60 frames per second rate limiting imposed by Chrome
+    # --no-default-browser-check | Disables a pop up window checking if Chrome is the default browser
+    # --remote-debugging-port | Enables remote debugging using the DevTools API
+    # --user-data-dir + --no-first-run | Chrome creates a user profile by default in a temporary directory and disable a pop up window checking if the user has a new profile
+
+    # V8 flags
+
+    # --trace-file-names | When tracing show the filename of the file where the optimized or de-optimized code is located
+    # --trace-opt | Trace code optimisations of hot functions
+    # --trace-deopt | Trace code de-optimisations of hot functions
+    # --print-opt-source | Print the optimized source code and trace the difference
+    # --code-comments | Comment the code where possible (useful for understanding the optimized and deoptimized source code)
+
+    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --disable-gpu-vsync --disable-frame-rate-limit --no-default-browser-check --remote-debugging-port=$REMOTE_DEBUGGING_PORT --user-data-dir=$TEMP_PROFILE_DIR --no-first-run --js-flags="--trace-file-names --trace-opt --trace-deopt --print-opt-source --code-comments" 1> $LOG_OUTPUT 2> $LOG_ERROR
 
     echo -e "Cleaning up temporary profile folder in $TEMP_PROFILE_DIR"
 
