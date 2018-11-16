@@ -97,13 +97,63 @@ _Image source: Google Developers Live - https://www.youtube.com/watch?v=L3ugr9BJ
 
 ### CPU profiling
 
+In order to know if you are CPU bound you must profile the CPU and analyze the capture.
+
+If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problems and the solution is often to combine draw calls to reduce the cost. This quite often means combining several meshes into a single mesh. The actual cost of the CPU is in many areas. The renderer needs to process each object (culling, material, lighting, collision, update). The more complex your materials the higher the cost at creation time. The renderer needs to prepare GPU commands to set up state for each draw call and do the actual API call. In WebGL there is a small but significant overhead due to strict validation of the shader code. The underlying graphics driver validates the commands futher and creates a command buffer for the hardware.
+
+In order to reduce the mesh draw calls one can use the following techniques:
+- Reduce the object count (e.g. static meshes, dynamic meshes and mesh particles)
+- Reduce the view distance
+- Adjusting the field of view
+- Reducing the amount of elements per draw call (e.g. combine textures into texture maps, use LOD models)
+- Disable features on a mesh like custom depth, shadow casting and shadow recieving.
+- Changing light sources to not shadow cast or have a tighter bounding volume (view cone, attenuation radius)
+- Use hardware instancing where possible as it reduces the driver overhead per draw call (e.g. mesh particles)
+
+If you are CPU bound by other parts of your application there is likely some other issue in your codebase.
+
+In order to know if you are CPU bound or GPU bound you should profile both.
+
 Show how to profile the CPU and how to interpret the visualized results.
 
 https://chromium.googlesource.com/chromium/src/+/master/docs/profiling.md
 
 ### GPU profiling
 
-There are several ways to profile a GPU.
+In order to know if you are GPU bound you must profile the GPU.
+
+The GPU has many processing units working in parallel and it is common to be bound by different units for different parts of the frame. Because of this, it makes sense to look at finding where the GPU cost is going when looking for the GPU bottleneck. Common ways your can be GPU bound are the application being draw call heavy, complex materials, dense triangle meshes and a large view frustum).
+
+In order to know if you are pixel bound one can try varying the viewport resolution. If you see a measureable performance change it likely means that you are bound by something pixel related. Usually it is either memory bandwidth (reading and writing), math bound ([ALU](https://en.wikipedia.org/wiki/Arithmetic_logic_unit)), but in rare casese, some specific units are saturated. If you can lower the memory (or math) on the relevant passes and see a performance difference you know it was bound by the memory bandwidth (or the ALU units).
+
+If you are fragment shader bound you can look at the following optimisation techniques:
+- Reduce the amount of stationary and dynamic lights in your scene. Pre-bake where possible.
+- Try to combine lights that have a similar origin.
+- Limit the attenuation radius and light cone angle to the minimum needed.
+- Use an early partial Z-pass in order to determine what parts of the scene are actually visible. It allows you to avoid expensive shading operations on pixels that do not contribute to the final image.
+- Limit the amount of post-processing steps.
+- Disable shadow casting where possible, either per object or per light.
+- Reduce the shadow map resolution.
+- Make use of the multi-render target extension when using deferred rendering (`WEBGL_draw_buffers`). Be aware that this extension is not available everywhere in `WebGL`. It fortunately is a part of the `WebGL2` core spec making it available everywhere where the `WebGL2` spec is implemented correctly.
+- Materials with few shader instructions and texture lookups run faster.
+- Never disable mipmaps if the texture can be seen in a smaller scale, to avoid slowdowns due to texture cache misses.
+- Make use of GPU compressed textures where possible as smaller texture formats result in faster materials.
+
+Often the shadow map rendering is bound by vertex shader, except if you have very large areas of shadow casting masked or translucent materials. Possible causes could be dense meshes, no LOD, usage of tesselation or relying too much world position offsets. Shadow map rendering cost scales with the number of dynamic lights in the scene, number of shadow casting objects in the light frustum and the number of cascades. This is a very common bottleneck and only larger content changes can reduce the cost.
+
+Highly tessallated meshes, where the wireframe appears as a solid color, can suffer from poor quad utilization. This is because GPUs process triangles in 2x2 pixel blocks and reject pixels outside of the triangle a bit later. This is needed for mip map computations. For larger triangles, this is not a problem, but if triangles are small or very lengthy the performance can suffer as many pixels are processed but few actually contribute to the image.
+
+If you are vertex shader bound you can look at the following optimisation techniques:
+- Avoid using too many vertices (use LOD meshes).
+- Verify your LOD is setup with aggresive transition ranges. A LOD should use vertex count by at least 2x. To optimize this, check the wireframe, solid colors indicate a problem.
+- Avoid using complex world position offsets (morph targets, vertex displacement using textures with poor mip-mapping)
+- Avoid tesselation if possible (if necessary be sure to limit to tessalation factor to a reasonable amount). Pretesselated meshes are usually faster.
+- Very large meshes can be split up for better view culling.
+- Avoid using too many vertex attributes.
+- Verify that the vertex count on your models in reasonable.
+- Billboards, imposter meshes or skybox textures can be used to efficiently fake detailed geometry when a mesh is far in the distance.
+
+In Chrome there are various ways to profile the GPU.
 
 Show how to profile the GPU and how to interpret the visualized results.
 
@@ -117,9 +167,11 @@ https://www.html5rocks.com/en/tutorials/games/abouttracing/
 
 ### GPU debugging
 
-There are several ways one can debug WebGL and the native OpenGL instructions using an external debugger like [RenderDoc (Windows, Linux)](https://renderdoc.org/docs/index.html) or [APITrace (Windows, Linux, Mac (limited support))](https://github.com/apitrace/apitrace). Instructions on how to use debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
+There are several ways one can debug the WebGL context and the native OpenGL instructions.
 
-For tracing an individual frame without setting up an external debugger I highly recommend using the Chrome extension [Spector.js](https://spector.babylonjs.com/).
+One can use an external debugger like [RenderDoc (Windows, Linux)](https://renderdoc.org/docs/index.html) or [APITrace (Windows, Linux, Mac (limited support))](https://github.com/apitrace/apitrace). Instructions on how to use debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
+
+For tracing an individual frame without setting up an external debugger I highly recommend using the Chrome extension [Spector.js](https://spector.babylonjs.com/). This does not require the disabling of the GPU sandbox, like some external debuggers do. I would highly recommend this method over using an external debugger if you use Mac OS.
 
 Finally one can also wrap the `WebGLRenderingContext` with a debugging wrapper like the [one provided by the Khronos Group](https://www.npmjs.com/package/webgl-debug) to catch invalid WebGL operations and give the errors a bit more context. This comes with a large overhead as every single instruction is traced (and optionally logged to the console so make sure to only optionally include the dependency in development.
 
@@ -139,8 +191,11 @@ In order to install `V8` and the `D8` shell I recommend following the excellent 
 $ ./scripts/run.sh <URL>
 ```
 
-## Resources
+## Resources and references
 
+- [CPU profiling in Unreal Engine](https://docs.unrealengine.com/en-us/Engine/Performance/CPU)
+- [GPU profiling in Unreal Engine](https://docs.unrealengine.com/en-us/Engine/Performance/GPU)
+- [Performance Guidelines for Artists and Designers](https://docs.unrealengine.com/en-us/Engine/Performance/Guidelines)
 - [The Breakpoint Ep. 8: Memory Profiling with Chrome DevTools](https://www.youtube.com/watch?v=L3ugr9BJqIs)
 - [V8 Garbage Collector](https://github.com/thlorenz/v8-perf/blob/master/gc.md#heap-organization-in-detail)
 - [Google I/O 2013 - Accelerating Oz with V8: Follow the Yellow Brick Road to JavaScript Performance](https://www.youtube.com/watch?v=VhpdsjBUS3g)
@@ -158,3 +213,4 @@ $ ./scripts/run.sh <URL>
 - [Understanding V8’s Bytecode](https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775)
 - [Visualize JavaScript AST's](https://resources.jointjs.com/demos/javascript-ast)
 - [Garbage collection in V8, an illustrated guide](https://medium.com/@_lrlna/garbage-collection-in-v8-an-illustrated-guide-d24a952ee3b8)
+
