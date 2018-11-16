@@ -152,7 +152,7 @@ In order to reduce the mesh draw calls one can use the following techniques:
 - Disable features on a mesh like custom depth, shadow casting and shadow receiving.
 - Change light sources to not shadow cast or have a tighter bounding volume (view cone, attenuation radius).
 - Use hardware instancing where possible as it reduces the driver overhead per draw call (e.g. mesh particles).
-- Reduce the depth of your scene graph. Compute the visible scene nodes only when the scene graph changes.
+- Reduce the depth of your scene graph.
 
 If you are CPU bound by other parts of your application there is likely some other issue in your codebase.
 
