@@ -113,6 +113,8 @@ https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/O
 
 https://www.html5rocks.com/en/tutorials/games/abouttracing/
 
+## Debugging
+
 ### GPU debugging
 
 There are several ways one can debug WebGL and the native OpenGL instructions using an external debugger like [RenderDoc (Windows, Linux)](https://renderdoc.org/docs/index.html) or [APITrace (Windows, Linux, Mac (limited support))](https://github.com/apitrace/apitrace). Instructions on how to use debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
