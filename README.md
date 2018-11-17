@@ -31,7 +31,7 @@ Research on advanced profiling of high-performance web applications.
 
 In order to profile the performance of a web application one would usually use the browsers built-in developer tools. Every once in a while however there comes a time when a developer needs a better understanding of a performance issue in order to solve it. In order to get that understanding the developer needs access and an understanding of the low-level optimisations, de-optimisations and caching techniques in modern browser engines. Due to security restrictions in the browser it is only really possible to get this low-level information from browsers by enabling various flags when launching the browser locally.
 
-`Chromium` and `V8` ship with various built-in tools that help their developers during development of the browser and engine. Luckily we can, as a web developer, leverage these same tools to get a better understanding of what is happening under the hood.
+`Chrome` and `V8` ship with various built-in tools that help their developers during development of the browser and engine. Luckily we can, as a web developer, leverage these same tools to get a better understanding of what is happening under the hood.
 
 To understand what parts of the application are useful to profile one must have a general understanding of the architecture of the compiler pipeline in modern browser engines like `V8`. The compiler pipelines behind each browser are similar but not at all the same on a technical level. By looking at the `V8` pipeline in general terms we can understand what the core parts of a browser engine is without getting lost in the implementation details.
 
@@ -170,15 +170,15 @@ In order to know if you are pixel bound one can try varying the viewport resolut
 In general you should look at using the following optimisation techniques:
 - Do as much as you can in the vertex shader rather than in the fragment shader because, per rendering pass, fragment shaders run many more times than vertex shaders, any calculation that can be done on the vertices and then just interpolated among fragments is a performance benefit (this interpolation is done "automagically" for you, through the fixed functionality rasterization phase of the WebGL pipeline).
 - Reduce the amount of WebGL state changes by caching and mirroring the state on the JavaScript. By diffing the state in JavaScript you can drastically reduce the amount of expensive WebGL state changes.
-- Avoid anything that requires synching the CPU and GPU as it is potentially very slow. Cache WebGL getter calls such as `getParameter` and `getUniformLocation` in JavaScript variables and only programtically use `setParameter` after making sure you actually need to set the parameter by checking the mirrored WebGL state in JavaScript.
+- Avoid anything that requires synching the CPU and GPU as it is potentially very slow. Cache WebGL getter calls such as `getParameter` and `getUniformLocation` in JavaScript variables and only programmatically use `setParameter` after making sure you actually need to set the parameter by checking the mirrored WebGL state in JavaScript.
 - Cull any geometry that won't be visible (octree, BVH, kd-tree, quadtree) through occlusion culling, viewport culling or backface culling.
 - Group mesh submissions with the same state in order to prevent unnecessary WebGL state switches.
-- Limit the size of the canvas and do not directly use the device's pixel ratio but rather artifically limit it to a point where visual fidelity is acceptable yet performant.
-- Turn off the canvas's native anti-aliasing option, instead anti-alias once during postprocessing using FXAA, SMAA or similar in the fragment shader.
+- Limit the size of the canvas and do not directly use the device's pixel ratio but rather artificially limit it to a point where visual fidelity is acceptable yet performant.
+- Turn off the native anti-aliasing option on the canvas element, instead anti-alias once during postprocessing using FXAA, SMAA or similar in the fragment shader.
 - Disable alpha blending and disable the preserving of the drawing buffer when creating the WebGL canvas.
 
 If you are **fragment shader** bound you can look at the following optimisation techniques:
-- Avoid having to resize textures to be a power of two during runtime. This is unnecessary in WebGL2 but it is still highly recommended to use power of two textures for a more efficient memory layout. NPOT textures may be handled noticeable slower and can cause black edging artifacts by mip-map interpolation.
+- Avoid having to resize textures to be a power of two during runtime. This is unnecessary in WebGL2 but it is still highly recommended to use power of two textures for a more efficient memory layout. NPOT textures may be handled noticeable slower and can cause black edging artifacts by mipmap interpolation.
 - Avoid using too many uniforms, use `Uniform Buffer Objects` and `Uniform Block`'s where possible.
 - Reduce the amount of stationary and dynamic lights in your scene. Pre-bake where possible.
 - Try to combine lights that have a similar origin.
@@ -228,7 +228,7 @@ For capturing GPU traces I recommend using the `rendering` preset.
 
 ## Installation
 
-To automatically download and setup Chrome Canary on MacOS using Homebrew you can use:
+To automatically download and setup Chrome Canary on Mac OS using Homebrew you can use:
 
 ```sh
 $ ./scripts/setup_macos.sh
