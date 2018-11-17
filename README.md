@@ -1,6 +1,6 @@
 # Profiling research
 
-Research on advanced profiling of high-performance web applications.
+Research on profiling of high-performance web applications (primarily WebGL applications).
 
 ## Table of contents
 
