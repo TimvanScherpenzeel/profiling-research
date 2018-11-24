@@ -42,6 +42,7 @@ run() {
     # --incognito | Launches Chrome in incognito mode
     # --disable-gpu-vsync + --disable-frame-rate-limit | Disables the VSync and de-limits the 60 frames per second rate limiting imposed by Chrome
     # --no-default-browser-check | Disables a pop up window checking if Chrome is the default browser
+    # --enable-precise-memory-info | Enables precise memory info (otherwise the results from performance.memory are bucketed and less useful)
     # --remote-debugging-port | Enables remote debugging using the DevTools API
     # --user-data-dir + --no-first-run | Chrome creates a user profile by default in a temporary directory and disable a pop up window checking if the user has a new profile
 
@@ -53,7 +54,7 @@ run() {
     # --print-opt-source | Print the optimized source code and trace the difference
     # --code-comments | Comment the code where possible (useful for understanding the optimized and deoptimized source code)
 
-    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --disable-gpu-vsync --disable-frame-rate-limit --no-default-browser-check --remote-debugging-port=$REMOTE_DEBUGGING_PORT --user-data-dir=$TEMP_PROFILE_DIR --no-first-run --js-flags="--trace-file-names --trace-opt --trace-deopt --print-opt-source --code-comments" 1> $LOG_OUTPUT 2> $LOG_ERROR
+    /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary $LOCATION --incognito --disable-gpu-vsync --disable-frame-rate-limit --no-default-browser-check --enable-precise-memory-info --remote-debugging-port=$REMOTE_DEBUGGING_PORT --user-data-dir=$TEMP_PROFILE_DIR --no-first-run --js-flags="--trace-file-names --trace-opt --trace-deopt --print-opt-source --code-comments" 1> $LOG_OUTPUT 2> $LOG_ERROR
 
     echo -e "Cleaning up temporary profile folder in $TEMP_PROFILE_DIR"
 
