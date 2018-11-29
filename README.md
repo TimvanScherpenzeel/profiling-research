@@ -180,7 +180,7 @@ In general you should look at using the following optimisation techniques:
 
 If you are **fragment shader** bound you can look at the following optimisation techniques:
 - Avoid having to resize textures to be a power of two during runtime. This is unnecessary in WebGL2 but it is still highly recommended to use power of two textures for a more efficient memory layout. NPOT textures may be handled noticeable slower and can cause black edging artifacts by mipmap interpolation.
-- Avoid using too many uniforms, use `Uniform Buffer Objects` and `Uniform Block`'s where possible.
+- Avoid using too many uniforms, use `Uniform Buffer Objects` and `Uniform Block`'s where possible (WebGL2).
 - Reduce the amount of stationary and dynamic lights in your scene. Pre-bake where possible.
 - Try to combine lights that have a similar origin.
 - Limit the attenuation radius and light cone angle to the minimum needed.
