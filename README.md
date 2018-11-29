@@ -174,7 +174,8 @@ In general you should look at using the following optimisation techniques:
 - Cull any geometry that won't be visible (octree, BVH, kd-tree, quadtree) through occlusion culling, viewport culling or backface culling.
 - Group mesh submissions with the same state in order to prevent unnecessary WebGL state switches.
 - Limit the size of the canvas and do not directly use the device's pixel ratio but rather artificially limit it to a point where visual fidelity is acceptable yet performant.
-- Turn off the native anti-aliasing option on the canvas element, instead anti-alias once during postprocessing using FXAA, SMAA or similar in the fragment shader.
+- Turn off the native anti-aliasing option on the canvas element, instead anti-alias once during postprocessing using FXAA, SMAA or similar in the fragment shader. The native implementation is unreliable and very naive.
+- Avoid using the native screen resolution retrieved using `window.devicePixelRatio()` for your fullscreen canvas as some phones can have a very high density display. Some effects and scenes can often get away with rendering at a lower resolution.
 - Disable alpha blending and disable the preserving of the drawing buffer when creating the WebGL canvas.
 
 If you are **fragment shader** bound you can look at the following optimisation techniques:
