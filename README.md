@@ -4,28 +4,30 @@ Research on profiling of high-performance web applications (primarily WebGL appl
 
 ## Table of contents
 
-* [Introduction](#introduction)
+- [Introduction](#introduction)
 
-* [Compiler pipeline](#compiler-pipeline)
-    - [Source code](#source-code)
-    - [Parser](#parser)
-    - [AST](#ast)
-    - [Baseline compiler](#baseline-compiler)
-    - [Optimizing compiler](#optimizing-compiler)
-    - [Conclusion](#conclusion)
+- [Compiler pipeline](#compiler-pipeline)
 
-* [Profiling](#profiling)
-    - [Memory profiling and garbage collection](#memory-profiling-and-garbage-collection)
-        - [Heap snapshot](#heap-snapshot)
-        - [Three snapshot technique](#three-snapshot-technique)
-    - [CPU profiling](#cpu-profiling)
-    - [GPU profiling](#gpu-profiling)
+  - [Source code](#source-code)
+  - [Parser](#parser)
+  - [AST](#ast)
+  - [Baseline compiler](#baseline-compiler)
+  - [Optimizing compiler](#optimizing-compiler)
+  - [Conclusion](#conclusion)
 
-* [Installation](#installation)
+- [Profiling](#profiling)
 
-* [Usage](#usage)
+  - [Memory profiling and garbage collection](#memory-profiling-and-garbage-collection)
+    - [Heap snapshot](#heap-snapshot)
+    - [Three snapshot technique](#three-snapshot-technique)
+  - [CPU profiling](#cpu-profiling)
+  - [GPU profiling](#gpu-profiling)
 
-* [Resources and references](#resources-and-references)
+- [Installation](#installation)
+
+- [Usage](#usage)
+
+- [Resources and references](#resources-and-references)
 
 ## Introduction
 
@@ -142,11 +144,12 @@ More advanced captures over period of time can be done using the performance cap
 
 ![Performance tracer](/docs/CPU_TRACE_PROFILER.png?raw=true)
 
-If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problem and the solution is often to combine draw calls to reduce the cost. 
+If you are CPU bound when rendering it is likely because of too many draw calls. This is a common problem and the solution is often to combine draw calls to reduce the cost.
 
 There is however a lot more going on than just draw calls. The renderer needs to process and update each object (culling, material, lighting, collision) on every frame tick. The more complex your materials (math, textures) the higher the cost at creation time and the more expensive it is to run at runtime. In WebGL there is a small but significant overhead due to strict validation of the shader code. The underlying graphics driver validates the commands further and creates a command buffer for the hardware. In a browser a lot more is going on than just the WebGL rendering context.
 
 In order to reduce the mesh draw calls one can use the following techniques:
+
 - Combine meshes into a single mesh to reduce the amount of necessary draw calls.
 - Reduce the object count (e.g. static meshes, dynamic meshes and mesh particles).
 - Reduce the far view distance on your camera's.
@@ -168,6 +171,7 @@ The GPU has many processing units working in parallel and it is common to be bou
 In order to know if you are pixel bound one can try varying the viewport resolution. If you see a measurable performance change it likely means that you are bound by something pixel related. Usually it is either texture memory bandwidth (reading and writing) bound or math bound ([ALU](https://en.wikipedia.org/wiki/Arithmetic_logic_unit)), but in rare cases, some specific units are saturated (e.g. `MRT`). If you can lower the memory, or math, on the relevant passes and see a performance difference you know it was bound by the memory bandwidth (or the ALU units).
 
 In general you should look at using the following optimisation techniques:
+
 - Do as much as you can in the vertex shader rather than in the fragment shader because, per rendering pass, fragment shaders run many more times than vertex shaders, any calculation that can be done on the vertices and then just interpolated among fragments is a performance benefit (this interpolation is done "automagically" for you, through the fixed functionality rasterization phase of the WebGL pipeline).
 - Reduce the amount of WebGL state changes by caching and mirroring the state on the JavaScript. By diffing the state in JavaScript you can drastically reduce the amount of expensive WebGL state changes.
 - Avoid anything that requires synching the CPU and GPU as it is potentially very slow. Cache WebGL getter calls such as `getParameter` and `getUniformLocation` in JavaScript variables and only programmatically use `setParameter` after making sure you actually need to set the parameter by checking the mirrored WebGL state in JavaScript.
@@ -179,6 +183,7 @@ In general you should look at using the following optimisation techniques:
 - Disable alpha blending and disable the preserving of the drawing buffer when creating the WebGL canvas.
 
 If you are **fragment shader** bound you can look at the following optimisation techniques:
+
 - Avoid having to resize textures to be a power of two during runtime. This is unnecessary in WebGL2 but it is still highly recommended to use power of two textures for a more efficient memory layout. NPOT textures may be handled noticeable slower and can cause black edging artifacts by mipmap interpolation.
 - Avoid using too many uniforms, use `Uniform Buffer Objects` and `Uniform Block`'s where possible (WebGL2).
 - Reduce the amount of stationary and dynamic lights in your scene. Pre-bake where possible.
@@ -198,6 +203,7 @@ Often the shadow map rendering is bound by the vertex shader, except if you have
 Highly tessellated meshes, where the wireframe appears as a solid color, can suffer from poor quad utilization. This is because GPUs process triangles in 2x2 pixel blocks and reject pixels outside of the triangle a bit later. This is needed for mip-map computations. For larger triangles, this is not a problem, but if triangles are small or very lengthy the performance can suffer as many pixels are processed but few actually contribute to the image.
 
 If you are **vertex shader** bound you can look at the following optimisation techniques:
+
 - Verify that the vertex count on your models in reasonable for real-time usage.
 - Avoid using too many vertices (use LOD meshes).
 - Verify your LOD is setup with aggressive transition ranges. A LOD should use vertex count by at least 2x. To optimize this, check the wireframe, solid colors indicate a problem.
@@ -209,23 +215,28 @@ If you are **vertex shader** bound you can look at the following optimisation te
 
 In `Chrome` there are various ways to profile the GPU:
 
-One can use the WebGL extension `EXT_disjoint_timer_query` to measure the duration of OpenGL commands submitted to the graphics processor without stalling the rendering pipeline.
-It makes most sense if this extension is integrated into the WebGL engine that you are using. A good example of a WebGL framework with an integrated profiler is [Luma.gl](https://github.com/uber/luma.gl).
+For tracing an individual WebGL frame in depth without setting up an external debugger I highly recommend using the `Chrome` extension [Spector.js](https://spector.babylonjs.com/) made by the Babylon team at Microsoft. It allows for exporting and importing stack traces generated by Spector, captures the full WebGL state at each step and allows for easy exploration of the vertex and fragment shader. On top of that the project is free, open source and maintained by a professional team instead of an individual.
 
-One can use an external debugger like [RenderDoc (Windows, Linux)](https://renderdoc.org/docs/index.html) or [APITrace (Windows, Linux, Mac (limited support))](https://github.com/apitrace/apitrace). Instructions on how to use debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
+![Spector.js state](/docs/SPECTORJS_STATE.png?raw=true)
 
-For tracing an individual frame without setting up an external debugger I highly recommend using the `Chrome` extension [Spector.js](https://spector.babylonjs.com/). This does not require the disabling of the GPU sandbox, like some external debuggers do. I would highly recommend this method over using an external debugger if you use Mac OS.
+![Spector.js shader](/docs/SPECTORJS_SHADER.png?raw=true)
 
-Finally one can also wrap the `WebGLRenderingContext` with a debugging wrapper like the [one provided by the Khronos Group](https://www.npmjs.com/package/webgl-debug) to catch invalid WebGL operations and give the errors a bit more context. This comes with a large overhead as every single instruction is traced (and optionally logged to the console so make sure to only optionally include the dependency in development.
+The main advantage of this approach is that it does **not** require the disabling of the GPU sandbox, like some external debuggers do, and avoids the need of having to install and learn a complex debugger. I would highly recommend this method over using an external debugger if you use Mac OS or if you are not familiar with an alternative external debugger like [RenderDoc (Windows, Linux)](https://renderdoc.org/docs/index.html) or [APITrace (Windows, Linux, Mac (limited support))](https://github.com/apitrace/apitrace). Instructions on how to debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
 
 For capturing traces over time one can use the advanced tracing capabilities like [MemoryInfra](https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/README.md) available in `chrome://tracing`.
-A good example for how to understand and work with the captures of it can be found [here](https://www.html5rocks.com/en/tutorials/games/abouttracing/). 
+A good example for how to understand and work with the captures of it can be found [here](https://www.html5rocks.com/en/tutorials/games/abouttracing/).
 
-For capturing GPU traces I recommend using the `rendering` preset.
+For capturing GPU traces using `chrome://tracing` I recommend using the `rendering` preset.
 
 ![Chrome tracing rendering toggle](/docs/CHROME_TRACING_RENDERING_TOGGLE.png?raw=true)
 
 ![Chrome tracing rendering trace](/docs/CHROME_TRACING_RENDERING_TRACE.png?raw=true)
+
+There are also various ways you can integrate profiling into your application.
+
+One can use the WebGL extension `EXT_disjoint_timer_query` to measure the duration of OpenGL commands submitted to the graphics processor without stalling the rendering pipeline. It makes most sense if this extension is integrated into the WebGL engine that you are using. A good example of a WebGL framework with an integrated profiler is [Luma.gl](https://github.com/uber/luma.gl).
+
+One can also wrap the `WebGLRenderingContext` with a debugging wrapper like the [one provided by the Khronos Group](https://www.npmjs.com/package/webgl-debug) to catch invalid WebGL operations and give the errors a bit more context. This comes with a large overhead as every single instruction is traced (and optionally logged to the console so make sure to only optionally include the dependency in development. I have rarely found this method to be useful as it does not capture a single frame clearly and logs everything with the same priority to the console.
 
 ## Installation
 
@@ -266,4 +277,3 @@ $ ./scripts/run_macos.sh <URL>
 - [Understanding V8’s Bytecode](https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775)
 - [Visualize JavaScript AST's](https://resources.jointjs.com/demos/javascript-ast)
 - [Garbage collection in V8, an illustrated guide](https://medium.com/@_lrlna/garbage-collection-in-v8-an-illustrated-guide-d24a952ee3b8)
-
