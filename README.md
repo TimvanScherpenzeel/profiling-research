@@ -223,6 +223,8 @@ For tracing an individual WebGL frame in depth without setting up an external de
 
 The main advantage of this approach is that it does **not** require the disabling of the GPU sandbox, like some external debuggers do, and avoids the need of having to install and learn a complex debugger. I would highly recommend this method over using an external debugger if you use Mac OS or if you are not familiar with an alternative external debugger like [RenderDoc (Windows, Linux)](https://renderdoc.org/docs/index.html) or [APITrace (Windows, Linux, Mac (limited support))](https://github.com/apitrace/apitrace). Instructions on how to debug WebGL using APITrace can be found [here](https://github.com/apitrace/apitrace/wiki/Google-Chrome-Browser).
 
+![Renderdoc drawcall](/docs/RENDERDOC_DRAWCALL.png?raw=true)
+
 For capturing traces over time one can use the advanced tracing capabilities like [MemoryInfra](https://chromium.googlesource.com/chromium/src/+/master/docs/memory-infra/README.md) available in `chrome://tracing`.
 A good example for how to understand and work with the captures of it can be found [here](https://www.html5rocks.com/en/tutorials/games/abouttracing/).
 
