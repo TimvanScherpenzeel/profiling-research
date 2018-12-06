@@ -260,6 +260,16 @@ In order to install `V8` and the `D8` shell I recommend following the excellent 
 
 ## Usage
 
+In order to be able to [properly profile your application](#three-snapshot-technique) the browsers needs to expose more of its internals than usual. One can do this by launching the browser with a set of command line flags.
+
+Included in this repo one can find a [script](scripts/run_macos.sh) that launches the latest version of Chrome Canary with a temporary user profile in an incognito window without any extensions installed.
+
+Chrome has VSync disabled for unlocked framerates (useful for knowing how much of your frame budget you still have left), more precise memory tracking (necessary for properly tracing your memory usage), remote port debugging, optimisation tracing and de-optimisation tracing (both logged to files).
+
+It is currently only configured for MacOS but I welcome PR's to add support for [Windows](https://github.com/TimvanScherpenzeel/profiling-research/issues/1) and [Linux](https://github.com/TimvanScherpenzeel/profiling-research/issues/2).
+
+You can launch the script as follows:
+
 ```sh
 $ ./scripts/run_macos.sh <URL>
 ```
