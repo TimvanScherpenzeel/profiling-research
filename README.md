@@ -288,4 +288,4 @@ $ ./scripts/run_macos.sh <URL>
 - [Visualize JavaScript AST's](https://resources.jointjs.com/demos/javascript-ast)
 - [Garbage collection in V8, an illustrated guide](https://medium.com/@_lrlna/garbage-collection-in-v8-an-illustrated-guide-d24a952ee3b8)
 - [Bailout reasons in V8 (Crankshaft)](https://github.com/vhf/v8-bailout-reasons)
-- [Bailout reasons in V8 (Turbofan)(https://chromium.googlesource.com/v8/v8/+/d3f074b23195a2426d14298dca30c4cf9183f203/src/bailout-reason.h)
+- [Bailout reasons in V8 (Turbofan)](https://chromium.googlesource.com/v8/v8/+/d3f074b23195a2426d14298dca30c4cf9183f203/src/bailout-reason.h)
