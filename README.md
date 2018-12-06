@@ -12,7 +12,7 @@ Research on profiling of high-performance web applications (primarily WebGL appl
   - [Parser](#parser)
   - [AST](#ast)
   - [Baseline compiler](#baseline-compiler)
-  - [Optimizing compiler](#optimizing-compiler)
+  - [Optimising compiler](#optimising-compiler)
   - [Conclusion](#conclusion)
 
 - [Profiling](#profiling)
@@ -60,15 +60,23 @@ An `Abstract Syntax Tree` or in short `AST` is created from the parsed source co
 
 ### Baseline compiler
 
-The goal of the baseline compiler (`Ignition` in `V8`) is to rapidly generate relatively unoptimized `machine code` (CPU architecture specific `bytecode` in the case of `Ignition`) as fast as possible and infer general type information to be used in potential further compilation steps. Whilst running, functions that are called often are marked as `hot` and are a candidate for further optimization using the optimizing compiler(s).
+The goal of the baseline compiler (`Ignition` in `V8`) is to rapidly generate relatively unoptimised `machine code` (CPU architecture specific `bytecode` in the case of `Ignition`) as fast as possible and infer general type information to be used in potential further compilation steps. Whilst running, functions that are called often are marked as `hot` and are a candidate for further optimisation using the optimising compiler(s).
 
-### Optimizing compiler
+### Optimising compiler
 
-The optimizing compiler (`Turbofan` in `V8`) recompiles `hot` functions using previously collected type information to optimize the generated `machine code` further. However, in order to make a faster version of the `machine code`, the optimizing compiler has to make some assumptions regarding the shape of the object, namely that they always have the same property names and order. Based on that the compiler can then make further optimisations. If the object shape has been the same throughout the lifetime of the program it is assumed that it will remain that way during future execution. Unfortunately in JavaScript there are no guarantees that this is actually the case meaning that object shapes can change at any stage over time. Due to this lack of guarantees the assumptions of the compiler need to be validated every single time before it runs. If it turns out the assumptions are false the optimizing compiler assumes it made the wrong assumptions, trashes the last version of the optimized code and steps back to a de-optimized version where assumptions are still valid. It is therefore very important that you limit the amount of type changes of an object throughout the lifetime of the program in order to keep the highly optimized code produced by the optimizing compiler alive. In the worst case scenario the object ends up in `de-optimized hell` and will never be picked up again to be optimized.
+The optimising compiler (`Turbofan` in `V8`) recompiles `hot` functions using previously collected type information to optimise the generated `machine code` further. However, in order to make a faster version of the `machine code`, the optimising compiler has to make some assumptions regarding the shape of the object, namely that they always have the same property names and order. Based on that the compiler can then make further optimisations. If the object shape has been the same throughout the lifetime of the program it is assumed that it will remain that way during future execution. Unfortunately in JavaScript there are no guarantees that this is actually the case meaning that object shapes can change at any stage over time. Due to this lack of guarantees the assumptions of the compiler need to be validated every single time before it runs. If it turns out the assumptions are false the optimising compiler assumes it made the wrong assumptions, trashes the last version of the optimised code and steps back to a de-optimised version where assumptions are still valid. It is therefore very important that you limit the amount of type changes of an object throughout the lifetime of the program in order to keep the highly optimised code produced by the optimising compiler alive. In the worst case scenario the object ends up in `de-optimised hell` and will never be picked up again to be optimised. Any code that V8 refuses to optimise can also end up in `de-optimised hell`.
+
+Browser engines are continuously improving their optimisations techniques, especially around new browser features. Browser vendors generally recommend **against** implementing browser specific hacks to work around de-optimisations however there are specific functions and patterns you should avoid using:
+
+- Avoid using `eval`, `arguments` and `with`. They cause what is known as [aliasing](<https://en.wikipedia.org/wiki/Aliasing_(computing)#Conflicts_with_optimization>) preventing the browser engine from optimising them.
+- Avoid using arrays with many different types in them
+- Avoid swapping out values in an array with a value of another type.
+- Avoid creating holes in arrays by deleting array entries or setting entries to `undefined`.
+- Avoid using `for in` as it will include properties that are inherited through the prototype chain. This behavior can lead to unexpected items in your loop and browsers likely deoptimise anything within them.
 
 ### Conclusion
 
-When profiling and optimizing your JavaScript code part of your effort should go out to optimizing the parts of the application that are being optimized by the optimizing compiler, meaning that these functions are `hot`, and more importantly which parts of the application are being de-optimized. De-optimization likely happens because types are changing in `hot` parts of the code or certain optimizations are not yet implemented by the compiler (such as `try catch` a few years ago, which has since been fixed). It is important to note that whilst you should pay attention when using these unoptimized implementations you should use them and report to the browser engines that you are using these features. If a certain de-optimization shows up a lot in heuristics and performance bug reports it is likely to be picked up by the engine maintainers as a priority. Other things to take into account are optimizing object property access, maintaining object shapes and understand the power of inline caches (monomorphic, polymorphic, megamorphic). Inline caches are used to memorize information on where to find properties on objects to reduce the number of expensive lookups.
+When profiling and optimising your JavaScript code part of your effort should go out to optimising the parts of the application that are being optimised by the optimising compiler, meaning that these functions are `hot`, and more importantly which parts of the application are being de-optimised. De-optimisation likely happens because types are changing in `hot` parts of the code or certain optimisations are not yet implemented by the compiler (such as `try catch` a few years ago, which has since been fixed). It is important to note that whilst you should pay attention when using these unoptimised implementations you should use them and report to the browser engines that you are using these features. If a certain de-optimisation shows up a lot in heuristics and performance bug reports it is likely to be picked up by the engine maintainers as a priority. Other things to take into account are optimising object property access, maintaining object shapes and understand the power of inline caches (monomorphic, polymorphic, megamorphic). Inline caches are used to memorize information on where to find properties on objects to reduce the number of expensive lookups.
 
 ## Profiling
 
@@ -206,7 +214,7 @@ If you are **vertex shader** bound you can look at the following optimisation te
 
 - Verify that the vertex count on your models in reasonable for real-time usage.
 - Avoid using too many vertices (use LOD meshes).
-- Verify your LOD is setup with aggressive transition ranges. A LOD should use vertex count by at least 2x. To optimize this, check the wireframe, solid colors indicate a problem.
+- Verify your LOD is setup with aggressive transition ranges. A LOD should use vertex count by at least 2x. To optimise this, check the wireframe, solid colors indicate a problem.
 - Avoid using complex world position offsets (morph targets, vertex displacement using textures with poor mip-mapping)
 - Avoid tessellation if possible (if necessary be sure to limit the tessellation factor to a reasonable amount). Pretesselated meshes are usually faster.
 - Very large meshes can be split up into multiple parts for better view culling.
@@ -256,7 +264,7 @@ $ ./scripts/run_macos.sh <URL>
 
 ## Resources and references
 
-- [Optimizing WebGL Applications with Don Olmstead](https://www.youtube.com/watch?v=QVvHtWePQdA)
+- [Optimising WebGL Applications with Don Olmstead](https://www.youtube.com/watch?v=QVvHtWePQdA)
 - [CPU profiling in Unreal Engine](https://docs.unrealengine.com/en-us/Engine/Performance/CPU)
 - [GPU profiling in Unreal Engine](https://docs.unrealengine.com/en-us/Engine/Performance/GPU)
 - [Performance Guidelines for Artists and Designers](https://docs.unrealengine.com/en-us/Engine/Performance/Guidelines)
@@ -277,3 +285,5 @@ $ ./scripts/run_macos.sh <URL>
 - [Understanding V8’s Bytecode](https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775)
 - [Visualize JavaScript AST's](https://resources.jointjs.com/demos/javascript-ast)
 - [Garbage collection in V8, an illustrated guide](https://medium.com/@_lrlna/garbage-collection-in-v8-an-illustrated-guide-d24a952ee3b8)
+- [Bailout reasons in V8 (Crankshaft)](https://github.com/vhf/v8-bailout-reasons)
+- [Bailout reasons in V8 (Turbofan)(https://chromium.googlesource.com/v8/v8/+/d3f074b23195a2426d14298dca30c4cf9183f203/src/bailout-reason.h)
