@@ -69,7 +69,7 @@ The optimising compiler (`Turbofan` in `V8`) recompiles `hot` functions using pr
 Browser engines are continuously improving their optimisations techniques, especially around new browser features. Browser vendors generally recommend **against** implementing browser specific hacks to work around de-optimisations however there are specific functions and patterns you should avoid using:
 
 - Avoid using `eval`, `arguments` and `with`. They cause what is known as [aliasing](<https://en.wikipedia.org/wiki/Aliasing_(computing)#Conflicts_with_optimization>) preventing the browser engine from optimising them.
-- Avoid using arrays with many different types in them
+- Avoid using arrays with many different types in them.
 - Avoid swapping out values in an array with a value of another type.
 - Avoid creating holes in arrays by deleting array entries or setting entries to `undefined`.
 - Avoid using `for in` as it will include properties that are inherited through the prototype chain. This behavior can lead to unexpected items in your loop and browsers likely deoptimise anything within them.
