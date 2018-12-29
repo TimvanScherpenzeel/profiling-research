@@ -299,3 +299,4 @@ $ ./scripts/run_macos.sh <URL>
 - [Garbage collection in V8, an illustrated guide](https://medium.com/@_lrlna/garbage-collection-in-v8-an-illustrated-guide-d24a952ee3b8)
 - [Bailout reasons in V8 (Crankshaft)](https://github.com/vhf/v8-bailout-reasons)
 - [Bailout reasons in V8 (Turbofan)](https://chromium.googlesource.com/v8/v8/+/d3f074b23195a2426d14298dca30c4cf9183f203/src/bailout-reason.h)
+- [Scott Meyers: Cpu Caches and Why You Care](https://www.youtube.com/watch?v=WDIkqP4JbkE)
